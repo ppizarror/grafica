@@ -45,7 +45,7 @@ def createShaderProgram():
     
     # Defining shaders for our pipeline
     vertex_shader = """
-    #version 130
+    #version 410
     in vec3 position;
     in vec3 color;
 
@@ -59,7 +59,7 @@ def createShaderProgram():
     """
 
     fragment_shader = """
-    #version 130
+    #version 410
 
     in vec3 fragColor;
     out vec4 outColor;
@@ -69,6 +69,9 @@ def createShaderProgram():
         outColor = vec4(fragColor, 1.0f);
     }
     """
+
+    VAO = glGenVertexArrays(1)
+    glBindVertexArray(VAO)
 
     # Assembling the shader program (pipeline) with both shaders
     shaderProgram = OpenGL.GL.shaders.compileProgram(
@@ -150,6 +153,10 @@ if __name__ == "__main__":
     width = 600
     height = 600
 
+    glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 4)
+    glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 1)
+    glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, GL_TRUE)
+    glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
     window = glfw.create_window(width, height, "Drawing a quad via a EBO", None, None)
 
     if not window:
