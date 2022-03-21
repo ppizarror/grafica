@@ -5,7 +5,6 @@ Transforming vertices in the CPU to create shapes.
 
 import glfw
 from OpenGL.GL import *
-import OpenGL.GL.shaders
 import numpy as np
 import sys
 import os.path

@@ -15,7 +15,6 @@ import grafica.transformations as tr
 import grafica.basic_shapes as bs
 import grafica.easy_shaders as es
 from grafica.assets_path import getAssetPath
-
 from grafica.gpu_shape import GPUShape, SIZE_IN_BYTES
 
 __author__ = "Sebastián Olmos"

@@ -5,7 +5,6 @@ Drawing a simple cube with OpenGL.
 
 import glfw
 from OpenGL.GL import *
-import OpenGL.GL.shaders
 import numpy as np
 import sys, os.path
 

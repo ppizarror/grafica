@@ -14,7 +14,6 @@ import grafica.basic_shapes as bs
 import grafica.easy_shaders as es
 import grafica.transformations as tr
 import grafica.performance_monitor as pm
-from grafica.glfw import create_window
 
 __author__ = "Daniel Calderon"
 __license__ = "MIT"
@@ -61,7 +60,7 @@ if __name__ == "__main__":
     width = 600
     height = 600
     title = "Displaying multiple shapes - Modern OpenGL"
-    window = create_window(width, height, title, None, None)
+    window = glfw.create_window(width, height, title, None, None)
 
     if not window:
         glfw.terminate()

@@ -160,7 +160,7 @@ def createGPUShape(pipeline, shape):
 
 # NOTA: Aqui creas tu escena. En escencia, sólo tendrías que modificar esta función.
 def createScene(pipeline, balls):
-    sphere = createGPUShape(pipeline, bs.createColorSphereTarea2(0.0, 0.59, 0.78))
+    sphere = createGPUShape(pipeline, bs.createColorSphereOFF(0.0, 0.59, 0.78))
 
     sphereNode = sg.SceneGraphNode('sphere')
     sphereNode.transform = tr.uniformScale(0.1)
