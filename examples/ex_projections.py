@@ -1,12 +1,13 @@
-
 # coding=utf-8
-"""Projections example"""
+"""
+Projections example.
+"""
 
 import glfw
 from OpenGL.GL import *
-import OpenGL.GL.shaders
 import numpy as np
 import sys, os.path
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import grafica.transformations as tr
 import grafica.basic_shapes as bs
@@ -14,7 +15,6 @@ import grafica.easy_shaders as es
 
 __author__ = "Daniel Calderon"
 __license__ = "MIT"
-
 
 PROJECTION_ORTHOGRAPHIC = 0
 PROJECTION_FRUSTUM = 1
@@ -33,10 +33,9 @@ controller = Controller()
 
 
 def on_key(window, key, scancode, action, mods):
-
     if action != glfw.PRESS:
         return
-    
+
     global controller
 
     if key == glfw.KEY_SPACE:
@@ -91,6 +90,7 @@ if __name__ == "__main__":
     # and which one is at the back
     glEnable(GL_DEPTH_TEST)
 
+
     # Convenience function to ease initialization
     def createGPUShape(shape):
         gpuShape = es.GPUShape().initBuffers()
@@ -98,18 +98,19 @@ if __name__ == "__main__":
         gpuShape.fillBuffers(shape.vertices, shape.indices, GL_STATIC_DRAW)
         return gpuShape
 
+
     # Creating shapes on GPU memory
     gpuAxis = createGPUShape(bs.createAxis(7))
-    gpuRedCube = createGPUShape(bs.createColorCube(1,0,0))
-    gpuGreenCube = createGPUShape(bs.createColorCube(0,1,0))
-    gpuBlueCube = createGPUShape(bs.createColorCube(0,0,1))
-    gpuYellowCube = createGPUShape(bs.createColorCube(1,1,0))
-    gpuCyanCube = createGPUShape(bs.createColorCube(0,1,1))
-    gpuPurpleCube = createGPUShape(bs.createColorCube(1,0,1))
+    gpuRedCube = createGPUShape(bs.createColorCube(1, 0, 0))
+    gpuGreenCube = createGPUShape(bs.createColorCube(0, 1, 0))
+    gpuBlueCube = createGPUShape(bs.createColorCube(0, 0, 1))
+    gpuYellowCube = createGPUShape(bs.createColorCube(1, 1, 0))
+    gpuCyanCube = createGPUShape(bs.createColorCube(0, 1, 1))
+    gpuPurpleCube = createGPUShape(bs.createColorCube(1, 0, 1))
     gpuRainbowCube = createGPUShape(bs.createRainbowCube())
 
     t0 = glfw.get_time()
-    camera_theta = np.pi/4
+    camera_theta = np.pi / 4
 
     while not glfw.window_should_close(window):
         # Using GLFW to check for input events
@@ -124,7 +125,7 @@ if __name__ == "__main__":
             camera_theta -= 2 * dt
 
         if (glfw.get_key(window, glfw.KEY_RIGHT) == glfw.PRESS):
-            camera_theta += 2* dt
+            camera_theta += 2 * dt
 
         # Setting up the view transform
 
@@ -135,8 +136,8 @@ if __name__ == "__main__":
 
         view = tr.lookAt(
             viewPos,
-            np.array([0,0,0]),
-            np.array([0,0,1])
+            np.array([0, 0, 0]),
+            np.array([0, 0, 1])
         )
 
         glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "view"), 1, GL_TRUE, view)
@@ -150,13 +151,12 @@ if __name__ == "__main__":
             projection = tr.frustum(-5, 5, -5, 5, 9, 100)
 
         elif controller.projection == PROJECTION_PERSPECTIVE:
-            projection = tr.perspective(60, float(width)/float(height), 0.1, 100)
-        
+            projection = tr.perspective(60, float(width) / float(height), 0.1, 100)
+
         else:
             raise Exception()
 
         glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "projection"), 1, GL_TRUE, projection)
-
 
         # Clearing the screen in both, color and depth
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -168,27 +168,24 @@ if __name__ == "__main__":
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
 
         # Drawing shapes with different model transformations
-        glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "model"), 1, GL_TRUE, tr.translate(5,0,0))
+        glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "model"), 1, GL_TRUE, tr.translate(5, 0, 0))
         pipeline.drawCall(gpuRedCube)
-        glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "model"), 1, GL_TRUE, tr.translate(-5,0,0))
+        glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "model"), 1, GL_TRUE, tr.translate(-5, 0, 0))
         pipeline.drawCall(gpuGreenCube)
 
-
-        glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "model"), 1, GL_TRUE, tr.translate(0,5,0))
+        glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "model"), 1, GL_TRUE, tr.translate(0, 5, 0))
         pipeline.drawCall(gpuBlueCube)
-        glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "model"), 1, GL_TRUE, tr.translate(0,-5,0))
+        glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "model"), 1, GL_TRUE, tr.translate(0, -5, 0))
         pipeline.drawCall(gpuYellowCube)
 
-
-        glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "model"), 1, GL_TRUE, tr.translate(0,0,5))
+        glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "model"), 1, GL_TRUE, tr.translate(0, 0, 5))
         pipeline.drawCall(gpuCyanCube)
-        glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "model"), 1, GL_TRUE, tr.translate(0,0,-5))
+        glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "model"), 1, GL_TRUE, tr.translate(0, 0, -5))
         pipeline.drawCall(gpuPurpleCube)
-
 
         glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "model"), 1, GL_TRUE, tr.identity())
         pipeline.drawCall(gpuRainbowCube)
-        
+
         glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "model"), 1, GL_TRUE, tr.identity())
         pipeline.drawCall(gpuAxis, GL_LINES)
 

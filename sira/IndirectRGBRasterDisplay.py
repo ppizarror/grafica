@@ -3,6 +3,8 @@
 Simple simulator for an RGB Raster display with an indirect color scheme.
 """
 
+__all__ = ['IndirectRGBRasterDisplay']
+
 import numpy as np
 from . import DirectRGBRasterDisplay
 

@@ -1,13 +1,14 @@
-
 # coding=utf-8
-"""plotting a 2d function as a surface"""
+"""
+Plotting a 2d function as a surface.
+"""
 
 import glfw
 from OpenGL.GL import *
-import OpenGL.GL.shaders
 import numpy as np
 import sys
 import os.path
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import grafica.transformations as tr
 import grafica.basic_shapes as bs
@@ -29,10 +30,9 @@ controller = Controller()
 
 
 def on_key(window, key, scancode, action, mods):
-
     if action != glfw.PRESS:
         return
-    
+
     global controller
 
     if key == glfw.KEY_SPACE:
@@ -47,12 +47,13 @@ def on_key(window, key, scancode, action, mods):
 z = --- + ---
     a^2   b^2
 """
+
+
 def paraboloid(x, y, a, b):
-    return (x*x) / (a*a) + (y*y) / (b*b)
+    return (x * x) / (a * a) + (y * y) / (b * b)
 
 
 def generateMesh(xs, ys, function, color):
-
     vertices = []
     indices = []
 
@@ -62,22 +63,21 @@ def generateMesh(xs, ys, function, color):
             x = xs[i]
             y = ys[j]
             z = function(x, y)
-            
+
             vertices += [x, y, z] + color
 
     # The previous loops generates full columns j-y and then move to
     # the next i-x. Hence, the index for each vertex i,j can be computed as
-    index = lambda i, j: i*len(ys) + j 
-    
-    # We generate quads for each cell connecting 4 neighbor vertices
-    for i in range(len(xs)-1):
-        for j in range(len(ys)-1):
+    index = lambda i, j: i * len(ys) + j
 
+    # We generate quads for each cell connecting 4 neighbor vertices
+    for i in range(len(xs) - 1):
+        for j in range(len(ys) - 1):
             # Getting indices for all vertices in this quad
-            isw = index(i,j)
-            ise = index(i+1,j)
-            ine = index(i+1,j+1)
-            inw = index(i,j+1)
+            isw = index(i, j)
+            ise = index(i + 1, j)
+            ine = index(i + 1, j + 1)
+            inw = index(i, j + 1)
 
             # adding this cell's quad as 2 triangles
             indices += [
@@ -132,13 +132,13 @@ if __name__ == "__main__":
     # generate a numpy array with 40 samples between -10 and 10
     xs = np.ogrid[-10:10:20j]
     ys = np.ogrid[-10:10:20j]
-    cpuSurface = generateMesh(xs, ys, simpleParaboloid, [1,0,0])
+    cpuSurface = generateMesh(xs, ys, simpleParaboloid, [1, 0, 0])
     gpuSurface = es.GPUShape().initBuffers()
     pipeline.setupVAO(gpuSurface)
     gpuSurface.fillBuffers(cpuSurface.vertices, cpuSurface.indices, GL_STATIC_DRAW)
 
     t0 = glfw.get_time()
-    camera_theta = np.pi/7
+    camera_theta = np.pi / 7
 
     perfMonitor = pm.PerformanceMonitor(glfw.get_time(), 0.5)
 
@@ -163,7 +163,7 @@ if __name__ == "__main__":
             camera_theta -= 2 * dt
 
         if (glfw.get_key(window, glfw.KEY_RIGHT) == glfw.PRESS):
-            camera_theta += 2* dt
+            camera_theta += 2 * dt
 
         # Setting up the view transform
 
@@ -174,14 +174,14 @@ if __name__ == "__main__":
 
         view = tr.lookAt(
             viewPos,
-            np.array([0,0,5]),
-            np.array([0,0,1])
+            np.array([0, 0, 5]),
+            np.array([0, 0, 1])
         )
 
         glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "view"), 1, GL_TRUE, view)
 
         # Setting up the projection transform
-        projection = tr.perspective(60, float(width)/float(height), 0.1, 100)
+        projection = tr.perspective(60, float(width) / float(height), 0.1, 100)
         glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "projection"), 1, GL_TRUE, projection)
 
         # Clearing the screen in both, color and depth

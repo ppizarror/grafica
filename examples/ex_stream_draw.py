@@ -1,14 +1,16 @@
 # coding=utf-8
-"""Drawing a deformable shape using GL_STREAM_DRAW"""
+"""
+Drawing a deformable shape using GL_STREAM_DRAW.
+"""
 
 import glfw
 from OpenGL.GL import *
-import OpenGL.GL.shaders
 import numpy as np
 import math
 import sys, os.path
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from grafica.gpu_shape import GPUShape, SIZE_IN_BYTES
+from grafica.gpu_shape import SIZE_IN_BYTES
 import grafica.basic_shapes as bs
 import grafica.easy_shaders as es
 
@@ -28,10 +30,9 @@ controller = Controller()
 
 
 def on_key(window, key, scancode, action, mods):
-
     if action != glfw.PRESS:
         return
-    
+
     global controller
 
     if key == glfw.KEY_SPACE:
@@ -46,11 +47,10 @@ def on_key(window, key, scancode, action, mods):
 
 def cursor_pos_callback(window, x, y):
     global controller
-    controller.mousePos = (x,y)
+    controller.mousePos = (x, y)
 
 
 def createVertices(N, maxPerturbationSize, time, normalizedMousePos):
-
     numberOfPerturbations = 20 * normalizedMousePos[0]
     perturbationSize = maxPerturbationSize * normalizedMousePos[1]
 
@@ -74,17 +74,16 @@ def createVertices(N, maxPerturbationSize, time, normalizedMousePos):
             xCoord, yCoord, 0,
 
             # color generates varying between 0 and 1
-            math.sin(theta + 3 * time),       math.cos(theta + 3 * time), 0]
+            math.sin(theta + 3 * time), math.cos(theta + 3 * time), 0]
 
     return vertices
 
 
 def createIndices(N):
-
     indices = []
     for i in range(N):
         # A triangle is created using the center, this and the next vertex
-        indices += [0, i, i+1]
+        indices += [0, i, i + 1]
 
     # The final triangle connects back to the second vertex
     indices += [0, N, 1]
@@ -95,9 +94,9 @@ def createIndices(N):
 def createShape(N, maxPerturbationSize, time, normalizedMousePos):
     vertices = createVertices(N, maxPerturbationSize, time, normalizedMousePos)
     indices = createIndices(N)
-    
+
     return bs.Shape(vertices, indices)
-    
+
 
 if __name__ == "__main__":
 
@@ -119,18 +118,18 @@ if __name__ == "__main__":
     # Connecting the callback functions
     glfw.set_key_callback(window, on_key)
     glfw.set_cursor_pos_callback(window, cursor_pos_callback)
-    
+
     # Creating our shader program and telling OpenGL to use it
     pipeline = es.SimpleShaderProgram()
     glUseProgram(pipeline.shaderProgram)
 
     # Creating shapes on GPU memory
-    shape = createShape(200, 15, 0.0, (0,0))
+    shape = createShape(200, 15, 0.0, (0, 0))
     gpuShape = es.GPUShape().initBuffers()
     pipeline.setupVAO(gpuShape)
     # We use stream as we will be changing the vertex data on each frame
     gpuShape.fillBuffers(shape.vertices, shape.indices, GL_STREAM_DRAW)
-    
+
     # Setting up the clear screen color
     glClearColor(0.15, 0.15, 0.15, 1.0)
 

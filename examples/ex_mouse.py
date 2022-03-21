@@ -1,6 +1,6 @@
 # coding=utf-8
 """
-Interactions with keyboard and mouse via GLFW/python
+Interactions with keyboard and mouse via GLFW/python.
 
 More information at:
 https://www.glfw.org/docs/latest/input_guide.html
@@ -11,10 +11,10 @@ https://pypi.org/project/glfw/
 
 import glfw
 from OpenGL.GL import *
-import OpenGL.GL.shaders
 import numpy as np
 import sys
 import os.path
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import grafica.transformations as tr
 import grafica.basic_shapes as bs
@@ -22,7 +22,6 @@ import grafica.easy_shaders as es
 
 __author__ = "Daniel Calderon"
 __license__ = "MIT"
-
 
 # We will use 32 bits data, so an integer has 4 bytes
 # 1 byte = 8 bits
@@ -42,7 +41,6 @@ controller = Controller()
 
 
 def on_key(window, key, scancode, action, mods):
-
     if action == glfw.PRESS:
         if key == glfw.KEY_ESCAPE:
             glfw.set_window_should_close(window, True)
@@ -50,11 +48,10 @@ def on_key(window, key, scancode, action, mods):
 
 def cursor_pos_callback(window, x, y):
     global controller
-    controller.mousePos = (x,y)
+    controller.mousePos = (x, y)
 
 
 def mouse_button_callback(window, button, action, mods):
-
     global controller
 
     """
@@ -74,13 +71,12 @@ def mouse_button_callback(window, button, action, mods):
         if (button == glfw.MOUSE_BUTTON_3):
             print("Mouse click - button 3")
 
-    elif (action ==glfw.RELEASE):
+    elif (action == glfw.RELEASE):
         if (button == glfw.MOUSE_BUTTON_1):
             controller.leftClickOn = False
 
 
 def scroll_callback(window, x, y):
-
     print("Mouse scroll:", x, y)
 
 
@@ -101,7 +97,6 @@ if __name__ == "__main__":
 
     glfw.make_context_current(window)
 
-
     # Connecting the callback function 'on_key' to handle keyboard events
     glfw.set_key_callback(window, on_key)
 
@@ -120,19 +115,21 @@ if __name__ == "__main__":
     # Setting up the clear screen color
     glClearColor(0.15, 0.15, 0.15, 1.0)
 
+
     # Convenience function to ease initialization
-    def createGPUColorQuad(r,g,b):
-        shapeQuad = bs.createColorQuad(r,g,b)
+    def createGPUColorQuad(r, g, b):
+        shapeQuad = bs.createColorQuad(r, g, b)
         gpuQuad = es.GPUShape().initBuffers()
         pipeline.setupVAO(gpuQuad)
         gpuQuad.fillBuffers(shapeQuad.vertices, shapeQuad.indices, GL_STATIC_DRAW)
         return gpuQuad
 
+
     # Creating shapes on GPU memory
-    blueQuad = createGPUColorQuad(0,0,1)
-    redQuad = createGPUColorQuad(1,0,0)
-    yellowQuad = createGPUColorQuad(1,1,0)
-    greenQuad = createGPUColorQuad(0,1,0)
+    blueQuad = createGPUColorQuad(0, 0, 1)
+    redQuad = createGPUColorQuad(1, 0, 0)
+    yellowQuad = createGPUColorQuad(1, 1, 0)
+    greenQuad = createGPUColorQuad(0, 1, 0)
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
 
@@ -155,7 +152,7 @@ if __name__ == "__main__":
             controller.theta += 4 * dt
             if controller.theta >= 2 * np.pi:
                 controller.theta -= 2 * np.pi
-        
+
         # Setting transform and drawing the rotating red quad
         glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "transform"), 1, GL_TRUE, tr.matmul([
             tr.rotationZ(controller.theta),
@@ -165,9 +162,9 @@ if __name__ == "__main__":
         pipeline.drawCall(redQuad)
 
         # Getting the mouse location in opengl coordinates
-        mousePosX = 2 * (controller.mousePos[0] - width/2) / width
-        mousePosY = 2 * (height/2 - controller.mousePos[1]) / height
- 
+        mousePosX = 2 * (controller.mousePos[0] - width / 2) / width
+        mousePosY = 2 * (height / 2 - controller.mousePos[1]) / height
+
         glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "transform"), 1, GL_TRUE, np.matmul(
             tr.translate(mousePosX, mousePosY, 0),
             tr.uniformScale(0.3)

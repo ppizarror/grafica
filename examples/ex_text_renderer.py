@@ -1,14 +1,16 @@
 # coding=utf-8
-"""Example drawing text with OpenGL textures"""
+"""
+Example drawing text with OpenGL textures.
+"""
 
 import glfw
 from OpenGL.GL import *
-import OpenGL.GL.shaders
 import numpy as np
 import sys
 import datetime
 import random
 import os.path
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import grafica.transformations as tr
 import grafica.basic_shapes as bs
@@ -30,11 +32,11 @@ class Controller:
 # global controller as communication with the callback function
 controller = Controller()
 
-def on_key(window, key, scancode, action, mods):
 
+def on_key(window, key, scancode, action, mods):
     if action != glfw.PRESS:
         return
-    
+
     global controller
 
     if key == glfw.KEY_SPACE:
@@ -86,8 +88,8 @@ if __name__ == "__main__":
         print()
 
     # Creating shapes on GPU memory
-    backgroundShape = bs.createTextureQuad(1,1)
-    bs.scaleVertices(backgroundShape, 5, [2,2,1])
+    backgroundShape = bs.createTextureQuad(1, 1)
+    bs.scaleVertices(backgroundShape, 5, [2, 2, 1])
     gpuBackground = es.GPUShape().initBuffers()
     texturePipeline.setupVAO(gpuBackground)
     gpuBackground.fillBuffers(backgroundShape.vertices, backgroundShape.indices, GL_STATIC_DRAW)
@@ -104,7 +106,7 @@ if __name__ == "__main__":
     gpuHeader.texture = gpuText3DTexture
     headerTransform = tr.matmul([
         tr.translate(0.9, -headerCenterX, 0),
-        tr.rotationZ(np.pi/2),
+        tr.rotationZ(np.pi / 2),
     ])
 
     dateCharSize = 0.15
@@ -125,7 +127,7 @@ if __name__ == "__main__":
     gpuTime.texture = gpuText3DTexture
 
     second = now.second
-    color = [1.0,1.0,1.0]
+    color = [1.0, 1.0, 1.0]
 
     perfMonitor = pm.PerformanceMonitor(glfw.get_time(), 0.5)
 
@@ -154,8 +156,8 @@ if __name__ == "__main__":
         texturePipeline.drawCall(gpuBackground)
 
         glUseProgram(textPipeline.shaderProgram)
-        glUniform4f(glGetUniformLocation(textPipeline.shaderProgram, "fontColor"), 1,1,1,0)
-        glUniform4f(glGetUniformLocation(textPipeline.shaderProgram, "backColor"), 0,0,0,1)
+        glUniform4f(glGetUniformLocation(textPipeline.shaderProgram, "fontColor"), 1, 1, 1, 0)
+        glUniform4f(glGetUniformLocation(textPipeline.shaderProgram, "backColor"), 0, 0, 0, 1)
         glUniformMatrix4fv(glGetUniformLocation(textPipeline.shaderProgram, "transform"), 1, GL_TRUE, headerTransform)
         textPipeline.drawCall(gpuHeader)
 
@@ -172,17 +174,18 @@ if __name__ == "__main__":
         if now.second != second:
             second = now.second
             color = [random.random(), random.random(), random.random()]
-        
+
         glUniform4f(glGetUniformLocation(textPipeline.shaderProgram, "fontColor"), color[0], color[1], color[2], 1)
-        glUniform4f(glGetUniformLocation(textPipeline.shaderProgram, "backColor"), 1-color[0], 1-color[1], 1-color[2],0.5)
+        glUniform4f(glGetUniformLocation(textPipeline.shaderProgram, "backColor"), 1 - color[0], 1 - color[1],
+                    1 - color[2], 0.5)
         glUniformMatrix4fv(glGetUniformLocation(textPipeline.shaderProgram, "transform"), 1, GL_TRUE,
-            tr.translate(-0.9, -0.7, 0))
+                           tr.translate(-0.9, -0.7, 0))
         textPipeline.drawCall(gpuDate)
 
-        glUniform4f(glGetUniformLocation(textPipeline.shaderProgram, "fontColor"), 1,1,1,1)
-        glUniform4f(glGetUniformLocation(textPipeline.shaderProgram, "backColor"), 0,0,0,0)
+        glUniform4f(glGetUniformLocation(textPipeline.shaderProgram, "fontColor"), 1, 1, 1, 1)
+        glUniform4f(glGetUniformLocation(textPipeline.shaderProgram, "backColor"), 0, 0, 0, 0)
         glUniformMatrix4fv(glGetUniformLocation(textPipeline.shaderProgram, "transform"), 1, GL_TRUE,
-            tr.translate(-0.9, -0.9, 0))
+                           tr.translate(-0.9, -0.9, 0))
         textPipeline.drawCall(gpuTime)
 
         # Once the drawing is rendered, buffers are swap so an uncomplete drawing is never seen.

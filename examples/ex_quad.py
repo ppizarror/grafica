@@ -1,5 +1,7 @@
 # coding=utf-8
-"""Drawing a Quad via a EBO"""
+"""
+Drawing a Quad via a EBO.
+"""
 
 import glfw
 from OpenGL.GL import *
@@ -8,7 +10,6 @@ import numpy as np
 
 __author__ = "Daniel Calderon"
 __license__ = "MIT"
-
 
 # We will use 32 bits data, so floats and integers have 4 bytes
 # 1 byte = 8 bits
@@ -25,10 +26,9 @@ controller = Controller()
 
 
 def on_key(window, key, scancode, action, mods):
-
     if action != glfw.PRESS:
         return
-    
+
     global controller
 
     if key == glfw.KEY_SPACE:
@@ -42,7 +42,6 @@ def on_key(window, key, scancode, action, mods):
 
 
 def createShaderProgram():
-    
     # Defining shaders for our pipeline
     vertex_shader = """
     #version 330
@@ -83,24 +82,23 @@ def createShaderProgram():
 
 
 def createQuad(shaderProgram):
-
     # Defining locations and colors for each vertex of the shape
     #####################################
-    
+
     vertexData = np.array([
-    #   positions        colors
-        -0.5, -0.5, 0.0,  1.0, 0.0, 0.0,
-         0.5, -0.5, 0.0,  0.0, 1.0, 0.0,
-         0.5,  0.5, 0.0,  0.0, 0.0, 1.0,
-        -0.5,  0.5, 0.0,  1.0, 1.0, 1.0
-    # It is important to use 32 bits data
-        ], dtype = np.float32)
+        #   positions        colors
+        -0.5, -0.5, 0.0, 1.0, 0.0, 0.0,
+        0.5, -0.5, 0.0, 0.0, 1.0, 0.0,
+        0.5, 0.5, 0.0, 0.0, 0.0, 1.0,
+        -0.5, 0.5, 0.0, 1.0, 1.0, 1.0
+        # It is important to use 32 bits data
+    ], dtype=np.float32)
 
     # Defining connections among vertices
     # We have a triangle every 3 indices specified
     indices = np.array(
         [0, 1, 2,
-         2, 3, 0], dtype= np.uint32)
+         2, 3, 0], dtype=np.uint32)
 
     size = len(indices)
 
@@ -127,7 +125,7 @@ def createQuad(shaderProgram):
     position = glGetAttribLocation(shaderProgram, "position")
     glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 6 * SIZE_IN_BYTES, ctypes.c_void_p(0))
     glEnableVertexAttribArray(position)
-    
+
     color = glGetAttribLocation(shaderProgram, "color")
     glVertexAttribPointer(color, 3, GL_FLOAT, GL_FALSE, 6 * SIZE_IN_BYTES, ctypes.c_void_p(3 * SIZE_IN_BYTES))
     glEnableVertexAttribArray(color)
@@ -143,7 +141,7 @@ def createQuad(shaderProgram):
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, len(indices) * SIZE_IN_BYTES, indices, GL_STATIC_DRAW)
 
     return vao, vbo, ebo, size
-    
+
 
 if __name__ == "__main__":
 
@@ -164,14 +162,14 @@ if __name__ == "__main__":
 
     # Connecting the callback function 'on_key' to handle keyboard events
     glfw.set_key_callback(window, on_key)
-    
+
     # Creating our shader program and telling OpenGL to use it
     shaderProgram = createShaderProgram()
     glUseProgram(shaderProgram)
 
     # Creating shapes on GPU memory
     vao, vbo, ebo, size = createQuad(shaderProgram)
-    
+
     # Setting up the clear screen color
     glClearColor(0.15, 0.15, 0.15, 1.0)
 

@@ -1,11 +1,13 @@
 # coding=utf-8
-"""Controlling the movement of a quad"""
+"""
+Controlling the movement of a quad.
+"""
 
 import glfw
 from OpenGL.GL import *
-import OpenGL.GL.shaders
 import numpy as np
 import sys, os.path
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import grafica.transformations as tr
 import grafica.basic_shapes as bs
@@ -28,10 +30,9 @@ controller = Controller()
 
 
 def on_key(window, key, scancode, action, mods):
-
     if action != glfw.PRESS:
         return
-    
+
     global controller
 
     if key == glfw.KEY_SPACE:
@@ -111,9 +112,9 @@ if __name__ == "__main__":
 
         # Drawing the Quad with the given transformation
         glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "transform"), 1, GL_TRUE, np.matmul(
-                tr.translate(controller.x, controller.y, 0.0),
-                tr.rotationZ(controller.theta)
-            ))
+            tr.translate(controller.x, controller.y, 0.0),
+            tr.rotationZ(controller.theta)
+        ))
         pipeline.drawCall(gpuQuad)
 
         # Once the render is done, buffers are swapped, showing only the complete scene.

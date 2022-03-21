@@ -1,13 +1,14 @@
 # coding=utf-8
-"""Render to Texture Example"""
+"""
+Render to Texture Example.
+"""
 
 import glfw
 from OpenGL.GL import *
-import OpenGL.GL.shaders
 import numpy as np
 import sys, os.path
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from grafica.gpu_shape import GPUShape, SIZE_IN_BYTES
 import grafica.transformations as tr
 import grafica.basic_shapes as bs
 import grafica.easy_shaders as es
@@ -27,10 +28,9 @@ controller = Controller()
 
 
 def on_key(window, key, scancode, action, mods):
-
     if action != glfw.PRESS:
         return
-    
+
     global controller
 
     if key == glfw.KEY_SPACE:
@@ -66,12 +66,11 @@ if __name__ == "__main__":
     # Connecting the callback function 'on_key' to handle keyboard events
     glfw.set_key_callback(window, on_key)
 
-    #glEnable(GL_DEPTH_TEST)
+    # glEnable(GL_DEPTH_TEST)
 
-    
     # Framebuffer configuration
     #######################
-    
+
     # Generating a new freamebuffer and binding it
     framebuffer = glGenFramebuffers(1)
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer)
@@ -100,7 +99,6 @@ if __name__ == "__main__":
 
     # Binding again the default shape buffer
     glBindFramebuffer(GL_FRAMEBUFFER, 0)
-    
 
     # Creating shader programs for textures and for colors
     #######################
@@ -113,19 +111,19 @@ if __name__ == "__main__":
     gpuRainbowCube = es.GPUShape().initBuffers()
     colorShaderProgram.setupVAO(gpuRainbowCube)
     gpuRainbowCube.fillBuffers(rainbowCube.vertices, rainbowCube.indices, GL_STATIC_DRAW)
-    
-    shapeQuad = bs.createTextureQuad(1,1)
+
+    shapeQuad = bs.createTextureQuad(1, 1)
     gpuQuad = es.GPUShape().initBuffers()
     textureShaderProgram.setupVAO(gpuQuad)
     gpuQuad.fillBuffers(shapeQuad.vertices, shapeQuad.indices, GL_STATIC_DRAW)
-    gpuQuad.texture = textureColorbuffer # <--- Here is where the magic happens!
+    gpuQuad.texture = textureColorbuffer  # <--- Here is where the magic happens!
 
     # Setting up the scene
     view = tr.lookAt(
-            np.array([1.0, 1.0, 1.0]),
-            np.array([0.0, 0.0, 0.0]),
-            np.array([0.0, 0.0, 1.0])
-        )
+        np.array([1.0, 1.0, 1.0]),
+        np.array([0.0, 0.0, 0.0]),
+        np.array([0.0, 0.0, 1.0])
+    )
     projection = tr.ortho(-1, 1, -1, 1, 0.1, 100)
 
     while not glfw.window_should_close(window):
@@ -138,7 +136,7 @@ if __name__ == "__main__":
         # Rendering to a texture
         #######################
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer)
-        #glBindFramebuffer(GL_FRAMEBUFFER, 0)
+        # glBindFramebuffer(GL_FRAMEBUFFER, 0)
         glEnable(GL_DEPTH_TEST)
         glClearColor(0.15, 0.15, 0.15, 1.0)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -152,11 +150,11 @@ if __name__ == "__main__":
         # Drawing
         glUseProgram(colorShaderProgram.shaderProgram)
         glUniformMatrix4fv(glGetUniformLocation(colorShaderProgram.shaderProgram, "projection"), 1, GL_TRUE, projection)
-        glUniformMatrix4fv(glGetUniformLocation(colorShaderProgram.shaderProgram, "model"), 1, GL_TRUE, tr.rotationZ(theta))
+        glUniformMatrix4fv(glGetUniformLocation(colorShaderProgram.shaderProgram, "model"), 1, GL_TRUE,
+                           tr.rotationZ(theta))
         glUniformMatrix4fv(glGetUniformLocation(colorShaderProgram.shaderProgram, "view"), 1, GL_TRUE, view)
         colorShaderProgram.drawCall(gpuRainbowCube)
-        
-        
+
         # Rendering the rendered texture to the viewport as a simple quad
         #######################
         glBindFramebuffer(GL_FRAMEBUFFER, 0)
@@ -171,10 +169,10 @@ if __name__ == "__main__":
 
         glUseProgram(textureShaderProgram.shaderProgram)
         glUniformMatrix4fv(glGetUniformLocation(textureShaderProgram.shaderProgram, "transform"), 1, GL_TRUE,
-            tr.matmul([
-                tr.translate(0.3 * np.cos(theta), 0, 0),
-                tr.shearing(0.3 * np.cos(theta), 0, 0, 0, 0, 0)])
-        )
+                           tr.matmul([
+                               tr.translate(0.3 * np.cos(theta), 0, 0),
+                               tr.shearing(0.3 * np.cos(theta), 0, 0, 0, 0, 0)])
+                           )
         textureShaderProgram.drawCall(gpuQuad)
 
         # Once the render is done, buffers are swapped, showing only the complete scene.

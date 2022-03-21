@@ -1,14 +1,14 @@
 # coding=utf-8
 """
-Drawing a Snowman using scene_graph
+Drawing a Snowman using scene_graph.
 """
 
 import glfw
 from OpenGL.GL import *
-import OpenGL.GL.shaders
 import numpy as np
 import sys
 import os.path
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import grafica.transformations as tr
 import grafica.basic_shapes as bs
@@ -21,20 +21,20 @@ class Controller:
     def __init__(self):
         self.fillPolygon = True
 
+
 # global controller as communication with the callback function
 controller = Controller()
 
 
 def on_key(window, key, scancode, action, mods):
-
     if action != glfw.PRESS:
         return
-    
+
     global controller
 
     if key == glfw.KEY_SPACE:
         controller.fillPolygon = not controller.fillPolygon
-    
+
     elif key == glfw.KEY_ESCAPE:
         glfw.set_window_should_close(window, True)
 
@@ -42,14 +42,13 @@ def on_key(window, key, scancode, action, mods):
         print('Unknown key')
 
 
-def createColorTriangle(r,g,b):
-
+def createColorTriangle(r, g, b):
     # Defining the location and colors of each vertex  of the shape
     vertices = [
-    #   positions        colors
-        -0.5, -0.5, 0.0,  r, g, b,
-         0.5, -0.5, 0.0,  r, g, b,
-         0.0,  0.5, 0.0,  r, g, b]
+        #   positions        colors
+        -0.5, -0.5, 0.0, r, g, b,
+        0.5, -0.5, 0.0, r, g, b,
+        0.0, 0.5, 0.0, r, g, b]
 
     # Defining connections among vertices
     # We have a triangle every 3 indices specified
@@ -59,7 +58,6 @@ def createColorTriangle(r,g,b):
 
 
 def createColorCircle(N, R, r, g, b):
-
     # First vertex at the center
     vertices = [0, 0, 0, r, g, b]
     indices = []
@@ -74,7 +72,7 @@ def createColorCircle(N, R, r, g, b):
             R * np.cos(theta), R * np.sin(theta), 0, r, g, b]
 
         # A triangle is created using the center, this and the next vertex
-        indices += [0, i, i+1]
+        indices += [0, i, i + 1]
 
     # The final triangle connects back to the second vertex
     indices += [0, N, 1]
@@ -83,7 +81,6 @@ def createColorCircle(N, R, r, g, b):
 
 
 def createSnowman(pipeline):
-
     # Convenience function to ease initialization
     def createGPUShape(shape):
         gpuShape = es.GPUShape().initBuffers()
@@ -96,7 +93,7 @@ def createSnowman(pipeline):
     gpuBlackCircle = createGPUShape(createColorCircle(10, 1, 0, 0, 0))
     gpuBrownQuad = createGPUShape(bs.createColorQuad(0.6, 0.3, 0))
     gpuOrangeTriangle = createGPUShape(createColorTriangle(1, 0.6, 0))
-    
+
     # Leaf nodes
     whiteCircleNode = sg.SceneGraphNode("whiteCircleNode")
     whiteCircleNode.childs = [gpuWhiteCircle]
@@ -106,10 +103,10 @@ def createSnowman(pipeline):
 
     brownQuadNode = sg.SceneGraphNode("brownQuadNode")
     brownQuadNode.childs = [gpuBrownQuad]
-    
+
     orangeTriangleNode = sg.SceneGraphNode("orangeTriangleNode")
     orangeTriangleNode.childs = [gpuOrangeTriangle]
-    
+
     # Body
     snowballBody = sg.SceneGraphNode("snowballBody")
     snowballBody.transform = tr.scale(10, 10, 0)
@@ -118,7 +115,7 @@ def createSnowman(pipeline):
     arm = sg.SceneGraphNode("arm")
     arm.transform = tr.matmul([
         tr.translate(0, 5, 0),
-        #tr.rotationZ(0),
+        # tr.rotationZ(0),
         tr.scale(2, 10, 1)
     ])
     arm.childs = [brownQuadNode]
@@ -127,7 +124,7 @@ def createSnowman(pipeline):
     leftArm.transform = tr.matmul([
         tr.translate(-7, 7, 0),
         tr.rotationZ(60 * np.pi / 180),
-        #tr.scale(1, 1, 1)
+        # tr.scale(1, 1, 1)
     ])
     leftArm.childs = [arm]
 
@@ -135,55 +132,55 @@ def createSnowman(pipeline):
     rightArm.transform = tr.matmul([
         tr.translate(7, 7, 0),
         tr.rotationZ(-60 * np.pi / 180),
-        #tr.scale(1, 1, 1)
+        # tr.scale(1, 1, 1)
     ])
     rightArm.childs = [arm]
-    
+
     body = sg.SceneGraphNode("body")
-    body.transform = tr.translate(0,10,0)
+    body.transform = tr.translate(0, 10, 0)
     body.childs = [snowballBody, leftArm, rightArm]
-    
+
     # Head
     snowballHead = sg.SceneGraphNode("snowballHead")
     snowballHead.transform = tr.scale(8, 8, 0)
     snowballHead.childs = [whiteCircleNode]
-    
+
     leftEye = sg.SceneGraphNode("leftEye")
     leftEye.transform = tr.matmul([
         tr.translate(0, 5, 0),
-        #tr.rotationZ(0),
+        # tr.rotationZ(0),
         tr.scale(2, 2, 1)
     ])
     leftEye.childs = [blackCircleNode]
-    
+
     rightEye = sg.SceneGraphNode("rightEye")
     rightEye.transform = tr.matmul([
         tr.translate(5, 5, 0),
-        #tr.rotationZ(0),
+        # tr.rotationZ(0),
         tr.scale(2, 2, 1)
     ])
     rightEye.childs = [blackCircleNode]
-    
+
     baseTriangle = sg.SceneGraphNode("baseTriangle")
     baseTriangle.transform = tr.matmul([
         tr.translate(0, 3.5, 0),
-        #tr.rotationZ(0),
+        # tr.rotationZ(0),
         tr.scale(2, 7, 1)
     ])
     baseTriangle.childs = [orangeTriangleNode]
-    
+
     nose = sg.SceneGraphNode("nose")
     nose.transform = tr.matmul([
         tr.translate(2, 0, 0),
         tr.rotationZ(-70 * np.pi / 180),
-        #tr.scale(1, 1, 1)
+        # tr.scale(1, 1, 1)
     ])
     nose.childs = [baseTriangle]
-    
+
     head = sg.SceneGraphNode("head")
     head.transform = tr.translate(0, 27, 0)
     head.childs = [snowballHead, leftEye, rightEye, nose]
-   
+
     # Snowman, the one and only
     snowman = sg.SceneGraphNode("snowman")
     snowman.childs = [head, body]
@@ -213,7 +210,7 @@ if __name__ == "__main__":
 
     # Assembling the shader program (pipeline) with both shaders
     pipeline = es.SimpleTransformShaderProgram()
-    
+
     # Telling OpenGL to use our shader program
     glUseProgram(pipeline.shaderProgram)
 
@@ -229,7 +226,7 @@ if __name__ == "__main__":
     while not glfw.window_should_close(window):
         # Using GLFW to check for input events
         glfw.poll_events()
-        
+
         if (controller.fillPolygon):
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
         else:
@@ -244,19 +241,19 @@ if __name__ == "__main__":
         leftArm.transform = tr.matmul([
             tr.translate(-7, 7, 0),
             tr.rotationZ(theta),
-            #tr.scale(1, 1, 1)
+            # tr.scale(1, 1, 1)
         ])
 
         rightArm = sg.findNode(snowman, "rightArm")
         rightArm.transform = tr.matmul([
             tr.translate(7, 7, 0),
             tr.rotationZ(theta),
-            #tr.scale(1, 1, 1)
+            # tr.scale(1, 1, 1)
         ])
 
         # Drawing the Car
-        sg.drawSceneGraphNode(snowman, pipeline, "transform", 
-                np.matmul(tr.translate(0, -0.5, 0), tr.scale(0.03, 0.03, 1)))
+        sg.drawSceneGraphNode(snowman, pipeline, "transform",
+                              np.matmul(tr.translate(0, -0.5, 0), tr.scale(0.03, 0.03, 1)))
 
         # Once the render is done, buffers are swapped, showing only the complete scene.
         glfw.swap_buffers(window)

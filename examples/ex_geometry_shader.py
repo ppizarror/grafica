@@ -1,5 +1,5 @@
 # coding=utf-8
-"""Geometry Shader Basic Example
+"""Geometry Shader Basic Example.
 
 Adapted from: https://learnopengl.com/code_viewer_gh.php?code=src/4.advanced_opengl/9.1.geometry_shader_houses/geometry_shader_houses.cpp
 """
@@ -11,7 +11,6 @@ import numpy as np
 
 __author__ = "Daniel Calderon"
 __license__ = "MIT"
-
 
 # We will use 32 bits data, so floats and integers have 4 bytes
 # 1 byte = 8 bits
@@ -28,10 +27,9 @@ controller = Controller()
 
 
 def on_key(window, key, scancode, action, mods):
-
     if action != glfw.PRESS:
         return
-    
+
     global controller
 
     if key == glfw.KEY_SPACE:
@@ -45,7 +43,6 @@ def on_key(window, key, scancode, action, mods):
 
 
 def createShaderProgram():
-
     # Defining shaders for our pipeline
     vertex_shader = """
     #version 330 core
@@ -138,7 +135,6 @@ def createShaderProgram():
     VAO = glGenVertexArrays(1)
     glBindVertexArray(VAO)
 
-
     # Assembling the shader program (pipeline) with both shaders
     shaderProgram = OpenGL.GL.shaders.compileProgram(
         OpenGL.GL.shaders.compileShader(vertex_shader, GL_VERTEX_SHADER),
@@ -149,17 +145,16 @@ def createShaderProgram():
 
 
 def createGPUPoints():
-
     # Defining locations and colors for each vertex
-    
+
     vertexData = np.array([
-    #   positions    colors
-        -0.5,  0.5, 1.0, 0.0, 0.0, # top-left
-         0.5,  0.5, 0.0, 1.0, 0.0, # top-right
-         0.5, -0.5, 0.0, 0.0, 1.0, # bottom-right
+        #   positions    colors
+        -0.5, 0.5, 1.0, 0.0, 0.0,  # top-left
+        0.5, 0.5, 0.0, 1.0, 0.0,  # top-right
+        0.5, -0.5, 0.0, 0.0, 1.0,  # bottom-right
         -0.5, -0.5, 1.0, 1.0, 0.0  # bottom-left
-    # It is important to use 32 bits data
-        ], dtype = np.float32)
+        # It is important to use 32 bits data
+    ], dtype=np.float32)
 
     size = len(vertexData) // 5
 
@@ -173,7 +168,7 @@ def createGPUPoints():
     # Vertex data must be attached to a Vertex Buffer Object (VBO)
     glBindBuffer(GL_ARRAY_BUFFER, vbo)
     glBufferData(GL_ARRAY_BUFFER, len(vertexData) * SIZE_IN_BYTES, vertexData, GL_STATIC_DRAW)
-    
+
     # position
     glEnableVertexAttribArray(0)
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * SIZE_IN_BYTES, ctypes.c_void_p(0))
@@ -207,7 +202,7 @@ if __name__ == "__main__":
 
     # Connecting the callback function 'on_key' to handle keyboard events
     glfw.set_key_callback(window, on_key)
-    
+
     # Creating our shader program and telling OpenGL to use it
     shaderProgram = createShaderProgram()
     glUseProgram(shaderProgram)

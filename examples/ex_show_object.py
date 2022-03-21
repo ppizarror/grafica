@@ -1,3 +1,8 @@
+# coding=utf-8
+"""
+Show object 3D.
+"""
+
 import argparse
 import open3d as o3d
 

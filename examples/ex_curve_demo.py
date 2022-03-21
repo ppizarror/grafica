@@ -302,7 +302,7 @@ if __name__ == "__main__":
 
     width = 800
     height = 800
-    title = "Tarea 2"
+    title = "Curve demo"
     window = glfw.create_window(width, height, title, None, None)
 
     if not window:

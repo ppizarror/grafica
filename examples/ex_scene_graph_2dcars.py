@@ -1,5 +1,7 @@
 # coding=utf-8
-"""Drawing many cars in 2D using scene_graph2"""
+"""
+Drawing many cars in 2D using scene_graph2.
+"""
 
 import glfw
 from OpenGL.GL import *
@@ -7,6 +9,7 @@ import OpenGL.GL.shaders
 import numpy as np
 import sys
 import os.path
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import grafica.transformations as tr
 import grafica.basic_shapes as bs
@@ -18,7 +21,6 @@ __license__ = "MIT"
 
 
 def on_key(window, key, scancode, action, mods):
-
     if action != glfw.PRESS:
         return
 
@@ -30,18 +32,17 @@ def on_key(window, key, scancode, action, mods):
 
 
 def createCar(pipeline):
-
     # Creating shapes on GPU memory
-    blackQuad = bs.createColorQuad(0,0,0)
+    blackQuad = bs.createColorQuad(0, 0, 0)
     gpuBlackQuad = es.GPUShape().initBuffers()
     pipeline.setupVAO(gpuBlackQuad)
     gpuBlackQuad.fillBuffers(blackQuad.vertices, blackQuad.indices, GL_STATIC_DRAW)
 
-    redQuad = bs.createColorQuad(1,0,0)
+    redQuad = bs.createColorQuad(1, 0, 0)
     gpuRedQuad = es.GPUShape().initBuffers()
     pipeline.setupVAO(gpuRedQuad)
     gpuRedQuad.fillBuffers(redQuad.vertices, redQuad.indices, GL_STATIC_DRAW)
-    
+
     # Cheating a single wheel
     wheel = sg.SceneGraphNode("wheel")
     wheel.transform = tr.uniformScale(0.2)
@@ -52,16 +53,16 @@ def createCar(pipeline):
 
     # Instanciating 2 wheels, for the front and back parts
     frontWheel = sg.SceneGraphNode("frontWheel")
-    frontWheel.transform = tr.translate(0.3,-0.3,0)
+    frontWheel.transform = tr.translate(0.3, -0.3, 0)
     frontWheel.childs += [wheelRotation]
 
     backWheel = sg.SceneGraphNode("backWheel")
-    backWheel.transform = tr.translate(-0.3,-0.3,0)
+    backWheel.transform = tr.translate(-0.3, -0.3, 0)
     backWheel.childs += [wheelRotation]
-    
+
     # Creating the chasis of the car
     chasis = sg.SceneGraphNode("chasis")
-    chasis.transform = tr.scale(1,0.5,1)
+    chasis.transform = tr.scale(1, 0.5, 1)
     chasis.childs += [gpuRedQuad]
 
     car = sg.SceneGraphNode("car")
@@ -70,17 +71,17 @@ def createCar(pipeline):
     car.childs += [backWheel]
 
     traslatedCar = sg.SceneGraphNode("traslatedCar")
-    traslatedCar.transform = tr.translate(0,0.3,0)
+    traslatedCar.transform = tr.translate(0, 0.3, 0)
     traslatedCar.childs += [car]
 
     return traslatedCar
 
-def createCars(pipeline, N):
 
+def createCars(pipeline, N):
     # First we scale a car
     scaledCar = sg.SceneGraphNode("traslatedCar")
     scaledCar.transform = tr.uniformScale(0.15)
-    scaledCar.childs += [createCar(pipeline)] # Re-using the previous function
+    scaledCar.childs += [createCar(pipeline)]  # Re-using the previous function
 
     cars = sg.SceneGraphNode("cars")
 
@@ -119,7 +120,7 @@ if __name__ == "__main__":
 
     # Assembling the shader program (pipeline) with both shaders
     pipeline = es.SimpleTransformShaderProgram()
-    
+
     # Telling OpenGL to use our shader program
     glUseProgram(pipeline.shaderProgram)
 
@@ -149,7 +150,7 @@ if __name__ == "__main__":
         car3.transform = tr.translate(0.3, 0.5 * np.sin(0.1 * theta), 0)
 
         # Uncomment to see the position of scaledCar_3, it will fill your terminal
-        #print("car3Position =", sg.findPosition(cars, "scaledCar3"))
+        # print("car3Position =", sg.findPosition(cars, "scaledCar3"))
 
         # Drawing the Car
         sg.drawSceneGraphNode(cars, pipeline, "transform")
@@ -159,5 +160,5 @@ if __name__ == "__main__":
 
     # freeing GPU memory
     cars.clear()
-    
+
     glfw.terminate()

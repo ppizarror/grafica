@@ -1,12 +1,14 @@
 # coding=utf-8
-"""Showing lighting effects: Flat, Gauraud and Phong"""
+"""
+Showing lighting effects: Flat, Gauraud and Phong.
+"""
 
 import glfw
 from OpenGL.GL import *
-import OpenGL.GL.shaders
 import numpy as np
 import sys
 import os.path
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import grafica.transformations as tr
 import grafica.basic_shapes as bs
@@ -16,16 +18,14 @@ import grafica.lighting_shaders as ls
 __author__ = "Daniel Calderon"
 __license__ = "MIT"
 
-
-LIGHT_FLAT    = 0
+LIGHT_FLAT = 0
 LIGHT_GOURAUD = 1
-LIGHT_PHONG   = 2
+LIGHT_PHONG = 2
 
-
-SHAPE_RED_CUBE     = 0
-SHAPE_GREEN_CUBE   = 1
-SHAPE_BLUE_CUBE    = 2
-SHAPE_YELLOW_CUBE  = 3
+SHAPE_RED_CUBE = 0
+SHAPE_GREEN_CUBE = 1
+SHAPE_BLUE_CUBE = 2
+SHAPE_YELLOW_CUBE = 3
 SHAPE_RAINBOW_CUBE = 4
 
 
@@ -41,11 +41,11 @@ class Controller:
 # We will use the global controller as communication with the callback function
 controller = Controller()
 
-def on_key(window, key, scancode, action, mods):
 
+def on_key(window, key, scancode, action, mods):
     if action != glfw.PRESS:
         return
-    
+
     global controller
 
     if key == glfw.KEY_SPACE:
@@ -117,6 +117,7 @@ if __name__ == "__main__":
     # and which one is at the back
     glEnable(GL_DEPTH_TEST)
 
+
     # Convenience function to ease initialization
     def createGPUShape(pipeline, shape):
         gpuShape = es.GPUShape().initBuffers()
@@ -124,21 +125,21 @@ if __name__ == "__main__":
         gpuShape.fillBuffers(shape.vertices, shape.indices, GL_STATIC_DRAW)
         return gpuShape
 
+
     # Creating shapes on GPU memory
     gpuAxis = createGPUShape(mvpPipeline, bs.createAxis(4))
 
     # Note: the vertex attribute layout (stride) is the same for the 3 lighting pipelines in
     # this case: flatPipeline, gouraudPipeline and phongPipeline. Hence, the VAO setup can
     # be the same.
-    gpuRedCube = createGPUShape(gouraudPipeline, bs.createColorNormalsCube(1,0,0))
-    gpuGreenCube = createGPUShape(gouraudPipeline, bs.createColorNormalsCube(0,1,0))
-    gpuBlueCube = createGPUShape(gouraudPipeline, bs.createColorNormalsCube(0,0,1))
-    gpuYellowCube = createGPUShape(gouraudPipeline, bs.createColorNormalsCube(1,1,0))
+    gpuRedCube = createGPUShape(gouraudPipeline, bs.createColorNormalsCube(1, 0, 0))
+    gpuGreenCube = createGPUShape(gouraudPipeline, bs.createColorNormalsCube(0, 1, 0))
+    gpuBlueCube = createGPUShape(gouraudPipeline, bs.createColorNormalsCube(0, 0, 1))
+    gpuYellowCube = createGPUShape(gouraudPipeline, bs.createColorNormalsCube(1, 1, 0))
     gpuRainbowCube = createGPUShape(gouraudPipeline, bs.createRainbowNormalsCube())
 
-
     t0 = glfw.get_time()
-    camera_theta = np.pi/4
+    camera_theta = np.pi / 4
 
     while not glfw.window_should_close(window):
 
@@ -154,26 +155,26 @@ if __name__ == "__main__":
             camera_theta -= 2 * dt
 
         if (glfw.get_key(window, glfw.KEY_RIGHT) == glfw.PRESS):
-            camera_theta += 2* dt
+            camera_theta += 2 * dt
 
         projection = tr.ortho(-1, 1, -1, 1, 0.1, 100)
-        projection = tr.perspective(45, float(width)/float(height), 0.1, 100)
+        projection = tr.perspective(45, float(width) / float(height), 0.1, 100)
 
         camX = 3 * np.sin(camera_theta)
         camY = 3 * np.cos(camera_theta)
 
-        viewPos = np.array([camX,camY,2])
+        viewPos = np.array([camX, camY, 2])
 
         view = tr.lookAt(
             viewPos,
-            np.array([0,0,0]),
-            np.array([0,0,1])
+            np.array([0, 0, 0]),
+            np.array([0, 0, 1])
         )
 
         rotation_theta = glfw.get_time()
 
-        axis = np.array([1,-1,1])
-        #axis = np.array([0,0,1])
+        axis = np.array([1, -1, 1])
+        # axis = np.array([0,0,1])
         axis = axis / np.linalg.norm(axis)
         model = tr.rotationA(rotation_theta, axis)
         model = tr.identity()
@@ -218,7 +219,7 @@ if __name__ == "__main__":
             lightingPipeline = phongPipeline
         else:
             raise Exception()
-        
+
         glUseProgram(lightingPipeline.shaderProgram)
 
         # Setting all uniform shader variables
@@ -236,9 +237,10 @@ if __name__ == "__main__":
         # TO DO: Explore different parameter combinations to understand their effect!
 
         glUniform3f(glGetUniformLocation(lightingPipeline.shaderProgram, "lightPosition"), -5, -5, 5)
-        glUniform3f(glGetUniformLocation(lightingPipeline.shaderProgram, "viewPosition"), viewPos[0], viewPos[1], viewPos[2])
+        glUniform3f(glGetUniformLocation(lightingPipeline.shaderProgram, "viewPosition"), viewPos[0], viewPos[1],
+                    viewPos[2])
         glUniform1ui(glGetUniformLocation(lightingPipeline.shaderProgram, "shininess"), 100)
-        
+
         glUniform1f(glGetUniformLocation(lightingPipeline.shaderProgram, "constantAttenuation"), 0.0001)
         glUniform1f(glGetUniformLocation(lightingPipeline.shaderProgram, "linearAttenuation"), 0.03)
         glUniform1f(glGetUniformLocation(lightingPipeline.shaderProgram, "quadraticAttenuation"), 0.01)
@@ -249,7 +251,7 @@ if __name__ == "__main__":
 
         # Drawing
         lightingPipeline.drawCall(gpuShape)
-        
+
         # Once the drawing is rendered, buffers are swap so an uncomplete drawing is never seen.
         glfw.swap_buffers(window)
 

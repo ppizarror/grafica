@@ -1,12 +1,14 @@
 # coding=utf-8
-"""Drawing 3D cars via scene graph"""
+"""
+Drawing 3D cars via scene graph.
+"""
 
 import glfw
 from OpenGL.GL import *
-import OpenGL.GL.shaders
 import numpy as np
 import sys
 import os.path
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import grafica.transformations as tr
 import grafica.basic_shapes as bs
@@ -30,10 +32,9 @@ controller = Controller()
 
 
 def on_key(window, key, scancode, action, mods):
-
     if action != glfw.PRESS:
         return
-    
+
     global controller
 
     if key == glfw.KEY_SPACE:
@@ -50,18 +51,17 @@ def on_key(window, key, scancode, action, mods):
 
 
 def createCar(pipeline, r, g, b):
-
     # Creating shapes on GPU memory
-    blackCube = bs.createColorCube(0,0,0)
+    blackCube = bs.createColorCube(0, 0, 0)
     gpuBlackCube = es.GPUShape().initBuffers()
     pipeline.setupVAO(gpuBlackCube)
     gpuBlackCube.fillBuffers(blackCube.vertices, blackCube.indices, GL_STATIC_DRAW)
 
-    chasisCube = bs.createColorCube(r,g,b)
+    chasisCube = bs.createColorCube(r, g, b)
     gpuChasisCube = es.GPUShape().initBuffers()
     pipeline.setupVAO(gpuChasisCube)
     gpuChasisCube.fillBuffers(chasisCube.vertices, chasisCube.indices, GL_STATIC_DRAW)
-    
+
     # Cheating a single wheel
     wheel = sg.SceneGraphNode("wheel")
     wheel.transform = tr.scale(0.2, 0.8, 0.2)
@@ -72,16 +72,16 @@ def createCar(pipeline, r, g, b):
 
     # Instanciating 2 wheels, for the front and back parts
     frontWheel = sg.SceneGraphNode("frontWheel")
-    frontWheel.transform = tr.translate(0.3,0,-0.3)
+    frontWheel.transform = tr.translate(0.3, 0, -0.3)
     frontWheel.childs += [wheelRotation]
 
     backWheel = sg.SceneGraphNode("backWheel")
-    backWheel.transform = tr.translate(-0.3,0,-0.3)
+    backWheel.transform = tr.translate(-0.3, 0, -0.3)
     backWheel.childs += [wheelRotation]
-    
+
     # Creating the chasis of the car
     chasis = sg.SceneGraphNode("chasis")
-    chasis.transform = tr.scale(1,0.7,0.5)
+    chasis.transform = tr.scale(1, 0.7, 0.5)
     chasis.childs += [gpuChasisCube]
 
     # All pieces together
@@ -115,7 +115,7 @@ if __name__ == "__main__":
 
     # Assembling the shader program (pipeline) with both shaders
     mvpPipeline = es.SimpleModelViewProjectionShaderProgram()
-    
+
     # Telling OpenGL to use our shader program
     glUseProgram(mvpPipeline.shaderProgram)
 
@@ -135,19 +135,19 @@ if __name__ == "__main__":
     redCarNode = createCar(mvpPipeline, 1, 0, 0)
     blueCarNode = createCar(mvpPipeline, 0, 0, 1)
 
-    blueCarNode.transform = np.matmul(tr.rotationZ(-np.pi/4), tr.translate(3.0,0,0.5))
+    blueCarNode.transform = np.matmul(tr.rotationZ(-np.pi / 4), tr.translate(3.0, 0, 0.5))
 
     # Using the same view and projection matrices in the whole application
-    projection = tr.perspective(45, float(width)/float(height), 0.1, 100)
+    projection = tr.perspective(45, float(width) / float(height), 0.1, 100)
     glUniformMatrix4fv(glGetUniformLocation(mvpPipeline.shaderProgram, "projection"), 1, GL_TRUE, projection)
-    
+
     view = tr.lookAt(
-            np.array([5,5,7]),
-            np.array([0,0,0]),
-            np.array([0,0,1])
-        )
+        np.array([5, 5, 7]),
+        np.array([0, 0, 0]),
+        np.array([0, 0, 1])
+    )
     glUniformMatrix4fv(glGetUniformLocation(mvpPipeline.shaderProgram, "view"), 1, GL_TRUE, view)
-    
+
     perfMonitor = pm.PerformanceMonitor(glfw.get_time(), 0.5)
 
     # glfw will swap buffers as soon as possible
@@ -176,12 +176,12 @@ if __name__ == "__main__":
             mvpPipeline.drawCall(gpuAxis, GL_LINES)
 
         # Moving the red car and rotating its wheels
-        redCarNode.transform = tr.translate(3 * np.sin( glfw.get_time() ),0,0.5)
+        redCarNode.transform = tr.translate(3 * np.sin(glfw.get_time()), 0, 0.5)
         redWheelRotationNode = sg.findNode(redCarNode, "wheelRotation")
         redWheelRotationNode.transform = tr.rotationY(-10 * glfw.get_time())
 
         # Uncomment to print the red car position on every iteration
-        #print(sg.findPosition(redCarNode, "car"))
+        # print(sg.findPosition(redCarNode, "car"))
 
         # Drawing the Car
         sg.drawSceneGraphNode(redCarNode, mvpPipeline, "model")

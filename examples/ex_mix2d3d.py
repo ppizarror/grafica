@@ -9,10 +9,10 @@ glClear(GL_DEPTH_BUFFER_BIT)
 
 import glfw
 from OpenGL.GL import *
-import OpenGL.GL.shaders
 import numpy as np
 import sys
 import os.path
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import grafica.transformations as tr
 import grafica.basic_shapes as bs
@@ -32,11 +32,11 @@ class Controller:
 # global controller as communication with the callback function
 controller = Controller()
 
-def on_key(window, key, scancode, action, mods):
 
+def on_key(window, key, scancode, action, mods):
     if action != glfw.PRESS:
         return
-    
+
     global controller
 
     if key == glfw.KEY_SPACE:
@@ -95,7 +95,7 @@ if __name__ == "__main__":
     mvpPipeline.setupVAO(gpuRainbowCube)
     gpuRainbowCube.fillBuffers(rainbowCube.vertices, rainbowCube.indices, GL_STATIC_DRAW)
 
-    shapeBoo = bs.createTextureQuad(1,1)
+    shapeBoo = bs.createTextureQuad(1, 1)
     gpuBoo = es.GPUShape().initBuffers()
     texture2dPipeline.setupVAO(gpuBoo)
     gpuBoo.fillBuffers(shapeBoo.vertices, shapeBoo.indices, GL_STATIC_DRAW)
@@ -115,16 +115,16 @@ if __name__ == "__main__":
         # Clearing the screen in both, color and depth
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-        projection = tr.perspective(30, float(width)/float(height),0.1, 100)
+        projection = tr.perspective(30, float(width) / float(height), 0.1, 100)
 
         view = tr.lookAt(
-            np.array([5,5,2]),
-            np.array([0,0,0]),
-            np.array([0,0,1])
+            np.array([5, 5, 2]),
+            np.array([0, 0, 0]),
+            np.array([0, 0, 1])
         )
 
         theta = glfw.get_time()
-        axis = np.array([1,-1,1])
+        axis = np.array([1, -1, 1])
         axis = axis / np.linalg.norm(axis)
         model = tr.rotationA(theta, axis)
 
@@ -141,7 +141,7 @@ if __name__ == "__main__":
         theta = glfw.get_time()
         tx = 0.7 * np.sin(0.5 * theta)
         ty = 0.2 * np.sin(5 * theta)
-    
+
         # derivative of tx give us the direction
         dtx = 0.7 * 0.5 * np.cos(0.5 * theta)
         if dtx > 0:
@@ -151,9 +151,9 @@ if __name__ == "__main__":
 
         glUseProgram(texture2dPipeline.shaderProgram)
         glUniformMatrix4fv(glGetUniformLocation(texture2dPipeline.shaderProgram, "transform"), 1, GL_TRUE, tr.matmul([
-                tr.translate(tx, ty, 0),
-                tr.scale(0.5, 0.5, 1.0),
-                reflex]))
+            tr.translate(tx, ty, 0),
+            tr.scale(0.5, 0.5, 1.0),
+            reflex]))
         texture2dPipeline.drawCall(gpuBoo)
 
         # Once the drawing is rendered, buffers are swap so an uncomplete drawing is never seen.

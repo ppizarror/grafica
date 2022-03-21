@@ -1,13 +1,13 @@
 # coding=utf-8
-"""Drawing a Quad via a EBO using some convenience infrastructure"""
+"""
+Drawing a Quad via a EBO using some convenience infrastructure.
+"""
 
 import glfw
 from OpenGL.GL import *
-import OpenGL.GL.shaders
-import numpy as np
 import sys, os.path
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from grafica.gpu_shape import GPUShape, SIZE_IN_BYTES
 import grafica.basic_shapes as bs
 import grafica.easy_shaders as es
 
@@ -25,10 +25,9 @@ controller = Controller()
 
 
 def on_key(window, key, scancode, action, mods):
-
     if action != glfw.PRESS:
         return
-    
+
     global controller
 
     if key == glfw.KEY_SPACE:
@@ -39,7 +38,7 @@ def on_key(window, key, scancode, action, mods):
 
     else:
         print('Unknown key')
-    
+
 
 if __name__ == "__main__":
 
@@ -60,7 +59,7 @@ if __name__ == "__main__":
 
     # Connecting the callback function 'on_key' to handle keyboard events
     glfw.set_key_callback(window, on_key)
-    
+
     # Creating our shader program and telling OpenGL to use it
     pipeline = es.SimpleShaderProgram()
     glUseProgram(pipeline.shaderProgram)
@@ -70,7 +69,7 @@ if __name__ == "__main__":
     gpuQuad = es.GPUShape().initBuffers()
     pipeline.setupVAO(gpuQuad)
     gpuQuad.fillBuffers(shapeQuad.vertices, shapeQuad.indices, GL_STATIC_DRAW)
-    
+
     # Setting up the clear screen color
     glClearColor(0.15, 0.15, 0.15, 1.0)
 
