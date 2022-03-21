@@ -1,11 +1,12 @@
 # coding=utf-8
-"""Hello OpenGL!"""
+"""
+Hello OpenGL!
+"""
 
 import glfw
 from OpenGL.GL import *
 import OpenGL.GL.shaders
 import numpy
-import sys
 
 __author__ = "Daniel Calderon"
 __license__ = "MIT"
@@ -34,10 +35,10 @@ if __name__ == "__main__":
     # Defining the triangle and its colors at each vertex
     #            positions        colors
     triangle = [-0.5, -0.5, 0.0, 1.0, 0.0, 0.0,
-                 0.5, -0.5, 0.0, 0.0, 1.0, 0.0,
-                 0.0,  0.5, 0.0, 0.0, 0.0, 1.0]
+                0.5, -0.5, 0.0, 0.0, 1.0, 0.0,
+                0.0, 0.5, 0.0, 0.0, 0.0, 1.0]
 
-    triangle = numpy.array(triangle, dtype = numpy.float32)
+    triangle = numpy.array(triangle, dtype=numpy.float32)
 
     # Defining shaders for our pipeline
     vertex_shader = """
@@ -106,8 +107,7 @@ if __name__ == "__main__":
 
     # Waiting to close the window
     while not glfw.window_should_close(window):
-
         # Getting events from GLFW
         glfw.poll_events()
-        
+
     glfw.terminate()

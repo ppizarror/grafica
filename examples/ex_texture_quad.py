@@ -1,12 +1,13 @@
 # coding=utf-8
-"""Texture Quad in 2D"""
+"""
+Texture Quad in 2D.
+"""
 
 import glfw
 from OpenGL.GL import *
-import OpenGL.GL.shaders
-import numpy as np
 import sys
 import os.path
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import grafica.transformations as tr
 import grafica.basic_shapes as bs
@@ -28,10 +29,9 @@ controller = Controller()
 
 
 def on_key(window, key, scancode, action, mods):
-
     if action != glfw.PRESS:
         return
-    
+
     global controller
 
     if key == glfw.KEY_SPACE:
@@ -66,7 +66,7 @@ if __name__ == "__main__":
 
     # A simple shader program with position and texture coordinates as inputs.
     pipeline = es.SimpleTextureTransformShaderProgram()
-    
+
     # Telling OpenGL to use our shader program
     glUseProgram(pipeline.shaderProgram)
 
@@ -99,7 +99,7 @@ if __name__ == "__main__":
 
         # Once the render is done, buffers are swapped, showing only the complete scene.
         glfw.swap_buffers(window)
-    
+
     # freeing GPU memory
     gpuShape.clear()
 

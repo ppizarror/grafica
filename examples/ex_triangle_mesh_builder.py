@@ -1,7 +1,10 @@
 # coding=utf-8
-"""Using the dedicated face based triangle mesh builder"""
+"""
+Using the dedicated face based triangle mesh builder.
+"""
 
 import sys, os.path
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import grafica.triangle_mesh as tm
 
@@ -9,7 +12,7 @@ __author__ = "Daniel Calderon"
 __license__ = "MIT"
 
 
-def createTriangleVertices(triangleIndices, vertices):
+def create_triangle_vertices(triangleIndices, vertices):
     a = vertices[triangleIndices.a]
     b = vertices[triangleIndices.b]
     c = vertices[triangleIndices.c]
@@ -18,7 +21,6 @@ def createTriangleVertices(triangleIndices, vertices):
 
 
 if __name__ == "__main__":
-
     # Creating all vertices.
     """
     This is the order for the vertices and triangles
@@ -57,4 +59,3 @@ if __name__ == "__main__":
     print("triangleMesh0 :", triangleMesh0)
     print("triangleMesh0.bc :", triangleMesh0.bc)
     print("triangleMesh0.bc.ab <=> triangleMesh0 :", triangleMesh0.bc.ab)
-    print()

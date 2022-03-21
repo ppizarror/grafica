@@ -1,5 +1,7 @@
 # coding=utf-8
-"""Transforming vertices in the CPU to create shapes."""
+"""
+Transforming vertices in the CPU to create shapes.
+"""
 
 import glfw
 from OpenGL.GL import *
@@ -7,6 +9,7 @@ import OpenGL.GL.shaders
 import numpy as np
 import sys
 import os.path
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import grafica.transformations as tr
 import grafica.basic_shapes as bs
@@ -14,7 +17,6 @@ import grafica.easy_shaders as es
 
 __author__ = "Daniel Calderon"
 __license__ = "MIT"
-
 
 # We will use 32 bits data, so an integer has 4 bytes
 # 1 byte = 8 bits
@@ -31,10 +33,9 @@ controller = Controller()
 
 
 def on_key(window, key, scancode, action, mods):
-
     if action != glfw.PRESS:
         return
-    
+
     global controller
 
     if key == glfw.KEY_SPACE:
@@ -55,21 +56,20 @@ def createShape():
 
     # Adding the vertex at the center, white color to identify it
     #            position       color
-    vertices = [ 0.0, 0.0, 0.0, 1.0, 1.0, 1.0]
+    vertices = [0.0, 0.0, 0.0, 1.0, 1.0, 1.0]
     indices = []
 
     # This vector will be used as reference to be transformed
-    xt = np.array([1,0,0,1])
+    xt = np.array([1, 0, 0, 1])
 
     # We iterate generating vertices over the circle border
-    for i in range(0,30):
-
+    for i in range(0, 30):
         # attempt 1: modifying manually each vertex.
         #         positions                                                        colors
-        #vertices += [r * np.cos(0.1 *i * np.pi), r * np.sin(0.1 *i * np.pi), 0.0,    1,0,0]
+        # vertices += [r * np.cos(0.1 *i * np.pi), r * np.sin(0.1 *i * np.pi), 0.0,    1,0,0]
 
         # attempt 2: using matrix transformations
-        transformation = tr.rotationZ(0.1 *i * np.pi)
+        transformation = tr.rotationZ(0.1 * i * np.pi)
         xtp = np.matmul(transformation, xt)
 
         # returning to cartesian coordinates from homogeneous coordinates
@@ -80,8 +80,7 @@ def createShape():
         vertices += [xtr[0], xtr[1], xtr[2], 0.0, 0.0, 1.0]
 
         # do not forget the indices!
-        indices += [0, i+1, i+2]
-
+        indices += [0, i + 1, i + 2]
 
     # removing the last spare vertex
     indices.pop()
@@ -123,7 +122,7 @@ if __name__ == "__main__":
     gpuShape.fillBuffers(shape.vertices, shape.indices, GL_STATIC_DRAW)
 
     # We do not need to update the transform in every frame, so we can do it here
-    transform = tr.translate(0,-0.5,0)
+    transform = tr.translate(0, -0.5, 0)
     glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "transform"), 1, GL_TRUE, transform)
 
     while not glfw.window_should_close(window):
@@ -145,5 +144,5 @@ if __name__ == "__main__":
 
     # freeing GPU memory
     gpuShape.clear()
-    
+
     glfw.terminate()

@@ -1,21 +1,23 @@
 # coding=utf-8
-"""Drawing 4 shapes with different transformations"""
+"""
+Drawing 4 shapes with different transformations.
+"""
 
 import glfw
 from OpenGL.GL import *
-import OpenGL.GL.shaders
 import numpy as np
 import sys
 import os.path
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import grafica.basic_shapes as bs
 import grafica.easy_shaders as es
 import grafica.transformations as tr
 import grafica.performance_monitor as pm
+from grafica.glfw import create_window
 
 __author__ = "Daniel Calderon"
 __license__ = "MIT"
-
 
 # We will use 32 bits data, so an integer has 4 bytes
 # 1 byte = 8 bits
@@ -31,12 +33,12 @@ class Controller:
 # we will use the global controller as communication with the callback function
 controller = Controller()
 
+
 # This function will be executed whenever a key is pressed or released
 def on_key(window, key, scancode, action, mods):
-
     if action != glfw.PRESS:
         return
-    
+
     global controller
 
     if key == glfw.KEY_SPACE:
@@ -59,7 +61,7 @@ if __name__ == "__main__":
     width = 600
     height = 600
     title = "Displaying multiple shapes - Modern OpenGL"
-    window = glfw.create_window(width, height, title, None, None)
+    window = create_window(width, height, title, None, None)
 
     if not window:
         glfw.terminate()
@@ -163,5 +165,5 @@ if __name__ == "__main__":
     # freeing GPU memory
     gpuTriangle.clear()
     gpuQuad.clear()
-    
+
     glfw.terminate()

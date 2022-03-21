@@ -1,6 +1,6 @@
 # coding=utf-8
 """
-Simple example using ImGui with GLFW and OpenGL
+Simple example using ImGui with GLFW and OpenGL.
 
 More info at:
 https://pypi.org/project/imgui/
@@ -21,6 +21,7 @@ import random
 import imgui
 from imgui.integrations.glfw import GlfwRenderer
 import os.path
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from grafica.gpu_shape import GPUShape
 import grafica.basic_shapes as bs
@@ -41,10 +42,9 @@ controller = Controller()
 
 
 def on_key(window, key, scancode, action, mods):
-
     if action != glfw.PRESS:
         return
-    
+
     global controller
 
     if key == glfw.KEY_SPACE:
@@ -58,7 +58,6 @@ def on_key(window, key, scancode, action, mods):
 
 
 def transformGuiOverlay(locationX, locationY, angle, color):
-
     # start new frame context
     imgui.new_frame()
 
@@ -97,7 +96,6 @@ def transformGuiOverlay(locationX, locationY, angle, color):
 class ModulationTransformShaderProgram:
 
     def __init__(self):
-
         vertex_shader = """
             #version 330
             
@@ -137,7 +135,6 @@ class ModulationTransformShaderProgram:
             OpenGL.GL.shaders.compileShader(vertex_shader, OpenGL.GL.GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, OpenGL.GL.GL_FRAGMENT_SHADER))
 
-
     def setupVAO(self, gpuShape):
         glBindVertexArray(gpuShape.vao)
 
@@ -148,7 +145,7 @@ class ModulationTransformShaderProgram:
         position = glGetAttribLocation(self.shaderProgram, "position")
         glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 24, ctypes.c_void_p(0))
         glEnableVertexAttribArray(position)
-        
+
         color = glGetAttribLocation(self.shaderProgram, "color")
         glVertexAttribPointer(color, 3, GL_FLOAT, GL_FALSE, 24, ctypes.c_void_p(12))
         glEnableVertexAttribArray(color)
@@ -156,14 +153,13 @@ class ModulationTransformShaderProgram:
         # Unbinding current vao
         glBindVertexArray(0)
 
-
     def drawCall(self, shape, mode=GL_TRIANGLES):
         assert isinstance(shape, GPUShape)
 
         # Binding the VAO and executing the draw call
         glBindVertexArray(shape.vao)
         glDrawElements(mode, shape.size, GL_UNSIGNED_INT, None)
-        
+
         # Unbind the current VAO
         glBindVertexArray(0)
 
@@ -198,7 +194,6 @@ if __name__ == "__main__":
     pipeline.setupVAO(gpuQuad)
     gpuQuad.fillBuffers(shapeQuad.vertices, shapeQuad.indices, GL_STATIC_DRAW)
 
-
     # initilize imgui context (see documentation)
     imgui.create_context()
     impl = GlfwRenderer(window)
@@ -223,7 +218,7 @@ if __name__ == "__main__":
         # - When io.want_capture_keyboard is true, do not dispatch keyboard input data to your main application.
         # Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
         # io = imgui.get_io()
-        #print(io.want_capture_mouse, io.want_capture_keyboard)
+        # print(io.want_capture_mouse, io.want_capture_keyboard)
         glfw.poll_events()
 
         # Filling or not the shapes depending on the controller state
@@ -243,13 +238,13 @@ if __name__ == "__main__":
 
         # Setting uniforms and drawing the Quad
         glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "transform"), 1, GL_TRUE,
-            np.matmul(
-                tr.translate(locationX, locationY, 0.0),
-                tr.rotationZ(angle)
-            )
-        )
+                           np.matmul(
+                               tr.translate(locationX, locationY, 0.0),
+                               tr.rotationZ(angle)
+                           )
+                           )
         glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "modulationColor"),
-            color[0], color[1], color[2])
+                    color[0], color[1], color[2])
         pipeline.drawCall(gpuQuad)
 
         # Drawing the imgui texture over our drawing

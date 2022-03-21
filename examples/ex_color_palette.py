@@ -1,19 +1,22 @@
 # coding=utf-8
-"""Simulating an indirect color scheme with matplotlib"""
+"""
+Simulating an indirect color scheme with matplotlib.
+"""
 
 import numpy as np
 import matplotlib.pyplot as mpl
 import matplotlib.animation as animation
 import sys, os.path
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from grafica.assets_path import getAssetPath
 
 __author__ = "Daniel Calderon"
 __license__ = "MIT"
 
+
 # Extract the different colors from an image
 def getColorPalette(image):
-
     # 3 dimensions: row, column and color
     assert len(image.shape) == 3
 
@@ -37,7 +40,7 @@ def getColorPalette(image):
             # The color component value is float value between 0 and 1.
 
             # converting the numpy array into a python tuple, which can be used as index in a python dictionary
-            pixelColor = (image[i,j,0], image[i,j,1], image[i,j,2])
+            pixelColor = (image[i, j, 0], image[i, j, 1], image[i, j, 2])
 
             # if the color is not in the palette, it is added
             if pixelColor not in colorsDict:
@@ -46,18 +49,17 @@ def getColorPalette(image):
                 # Storing the index in the dictionary for further queries
                 colorsDict[pixelColor] = colorIndex
                 # Storing the color associated with a given color index
-                colorsPalette += [image[i,j,:]]
-            
+                colorsPalette += [image[i, j, :]]
+
             # storing the index in the indexed image
-            #print("pp", colorsDict, pixelColor)
-            indexedImage[i,j] = colorsDict[pixelColor]
-    
+            # print("pp", colorsDict, pixelColor)
+            indexedImage[i, j] = colorsDict[pixelColor]
+
     # returning indexed image and its colors
     return indexedImage, colorsPalette
 
 
 def assignColors(indexedImage, colorsPalette):
-
     # 2 dimensions: row and column
     assert len(indexedImage.shape) == 2
 
@@ -69,14 +71,13 @@ def assignColors(indexedImage, colorsPalette):
         # Checking each column
         for j in range(indexedImage.shape[1]):
             # Painting the image with the color in the palette
-            colorIndex = indexedImage[i,j]
-            image[i,j,:] = colorsPalette[colorIndex]
-    
+            colorIndex = indexedImage[i, j]
+            image[i, j, :] = colorsPalette[colorIndex]
+
     return image
 
 
 def modifyPalette(colorPalette):
-
     newPalette = []
 
     for color in colorPalette:
@@ -93,15 +94,15 @@ if __name__ == "__main__":
     originalImage = mpl.imread(getAssetPath("santiago.png"))
 
     print("Shape of the image: ", originalImage.shape)
-    print("Example of pixel value:", originalImage[1,2,:])
+    print("Example of pixel value:", originalImage[1, 2, :])
 
     # Removing alpha channel if present
     if originalImage.shape[2] == 4:
-        originalImage = originalImage[:,:,0:3]
+        originalImage = originalImage[:, :, 0:3]
 
         print("Alpha channel removed")
         print("Shape of the image: ", originalImage.shape)
-        print("Example of pixel value:", originalImage[1,2,:])
+        print("Example of pixel value:", originalImage[1, 2, :])
 
     # Obtaining all different colors in the image and the indexed image
     indexedImage, colorsPalette = getColorPalette(originalImage)

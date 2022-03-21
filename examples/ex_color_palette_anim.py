@@ -1,16 +1,19 @@
 # coding=utf-8
-"""Animation changing the color palette  while simulating an indirect color scheme with matplotlib"""
+"""
+Animation changing the color palette  while simulating an indirect color scheme with matplotlib.
+"""
 
 from ex_color_palette import *
 import sys, os.path
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from grafica.assets_path import getAssetPath
 
 __author__ = "Daniel Calderon"
 __license__ = "MIT"
 
-def updatePalette(colorPalette, t):
 
+def updatePalette(colorPalette, t):
     newPalette = []
 
     for color in colorPalette:
@@ -32,7 +35,7 @@ if __name__ == "__main__":
 
     # Removing alpha channel if present
     if originalImage.shape[2] == 4:
-        originalImage = originalImage[:,:,0:3]
+        originalImage = originalImage[:, :, 0:3]
 
     # Obtaining all different colors in the image and the indexed image
     indexedImage, colorPalette = getColorPalette(originalImage)
@@ -45,6 +48,7 @@ if __name__ == "__main__":
 
     time = 0
 
+
     def updateFig(*args):
         global time
         time += 0.1
@@ -53,6 +57,7 @@ if __name__ == "__main__":
         updatedImage = assignColors(indexedImage, newColorPalette)
         im.set_array(updatedImage)
         return im,
+
 
     ani = animation.FuncAnimation(fig, updateFig, interval=50, blit=True)
     mpl.show()

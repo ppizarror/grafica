@@ -1,13 +1,15 @@
 # coding=utf-8
-"""Circles, collisions and gravity"""
+"""
+Circles, collisions and gravity.
+"""
 
 import glfw
 from OpenGL.GL import *
-import OpenGL.GL.shaders
 import numpy as np
 import random
 import sys
 import os.path
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import grafica.basic_shapes as bs
 import grafica.easy_shaders as es
@@ -25,12 +27,14 @@ RADIUS = 0.08
 WINDOW_WIDTH = 600
 WINDOW_HEIGHT = 600
 
+
 # Convenience function to ease initialization
 def createGPUShape(pipeline, shape):
     gpuShape = es.GPUShape().initBuffers()
     pipeline.setupVAO(gpuShape)
     gpuShape.fillBuffers(shape.vertices, shape.indices, GL_STATIC_DRAW)
     return gpuShape
+
 
 class Circle:
     def __init__(self, pipeline, position, velocity, r, g, b):
@@ -52,10 +56,10 @@ class Circle:
 
     def draw(self):
         glUniformMatrix4fv(glGetUniformLocation(self.pipeline.shaderProgram, "transform"), 1, GL_TRUE,
-            tr.translate(self.position[0], self.position[1], 0.0)
-        )
+                           tr.translate(self.position[0], self.position[1], 0.0)
+                           )
         self.pipeline.drawCall(self.gpuShape)
-    
+
 
 def rotate2D(vector, theta):
     """
@@ -67,7 +71,7 @@ def rotate2D(vector, theta):
     return np.array([
         cos_theta * vector[0] - sin_theta * vector[1],
         sin_theta * vector[0] + cos_theta * vector[1]
-    ], dtype = np.float32)
+    ], dtype=np.float32)
 
 
 def collide(circle1, circle2):
@@ -75,7 +79,7 @@ def collide(circle1, circle2):
     If there are a collision between the circles, it modifies the velocity of
     both circles in a way that preserves energy and momentum.
     """
-    
+
     assert isinstance(circle1, Circle)
     assert isinstance(circle2, Circle)
 
@@ -86,9 +90,8 @@ def collide(circle1, circle2):
     circle2MovingToNormal = np.dot(circle1.velocity, normal) < 0.0
 
     if not (circle1MovingToNormal and circle2MovingToNormal):
-
         # obtaining the tangent direction
-        tangent = rotate2D(normal, np.pi/2.0)
+        tangent = rotate2D(normal, np.pi / 2.0)
 
         # Projecting the velocity vector over the normal and tangent directions
         # for both circles, 1 and 2.
@@ -115,7 +118,6 @@ def areColliding(circle1, circle2):
 
 
 def collideWithBorder(circle):
-
     # Right
     if circle.position[0] + circle.radius > 1.0:
         circle.velocity[0] = -abs(circle.velocity[0])
@@ -140,16 +142,16 @@ class Controller:
         self.circleCollisions = False
         self.useGravity = False
 
+
 # we will use the global controller as communication with the callback function
 controller = Controller()
 
 
 # This function will be executed whenever a key is pressed or released
 def on_key(window, key, scancode, action, mods):
-
     if action != glfw.PRESS:
         return
-    
+
     global controller
 
     if key == glfw.KEY_SPACE:
@@ -208,7 +210,7 @@ if __name__ == "__main__":
             random.uniform(-1.0, 1.0),
             random.uniform(-1.0, 1.0)
         ])
-        r, g, b = random.uniform(0,1), random.uniform(0,1), random.uniform(0,1)
+        r, g, b = random.uniform(0, 1), random.uniform(0, 1), random.uniform(0, 1)
         circle = Circle(pipeline, position, velocity, r, g, b)
         circles += [circle]
 
@@ -238,7 +240,7 @@ if __name__ == "__main__":
             acceleration = gravityAcceleration
         else:
             acceleration = noGravityAcceleration
-        
+
         # Physics!
         for circle in circles:
             # moving each circle
@@ -250,7 +252,7 @@ if __name__ == "__main__":
         # checking and processing collisions among circles
         if controller.circleCollisions:
             for i in range(len(circles)):
-                for j in range(i+1, len(circles)):
+                for j in range(i + 1, len(circles)):
                     if areColliding(circles[i], circles[j]):
                         collide(circles[i], circles[j])
 
@@ -273,5 +275,5 @@ if __name__ == "__main__":
     # freeing GPU memory
     for circle in circles:
         circle.gpuShape.clear()
-    
+
     glfw.terminate()

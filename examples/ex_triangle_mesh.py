@@ -1,7 +1,11 @@
 # coding=utf-8
-"""Face based data structure for a triangle mesh"""
+"""
+Face based data structure for a triangle mesh.
+"""
 
-import sys, os.path
+import sys
+import os.path
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import grafica.triangle_mesh as tm
 
@@ -16,11 +20,12 @@ def createTriangleVertices(triangleIndices, vertices):
 
     return tm.Triangle(a, b, c)
 
+
 def printFramed(text):
     N = len(text) + 6
-    print("="*N)
+    print("=" * N)
     print("== " + str(text) + " ==")
-    print("="*N)
+    print("=" * N)
 
 
 if __name__ == "__main__":
@@ -68,7 +73,7 @@ if __name__ == "__main__":
     meshes[2].ab = meshes[1]
     meshes[2].bc = meshes[3]
     meshes[3].ab = meshes[2]
-    
+
     printFramed("All triangles")
     for i in range(len(meshes)):
         triangleMesh = meshes[i]
@@ -115,7 +120,6 @@ if __name__ == "__main__":
         triangleVertices = createTriangleVertices(triangleIndices, vertices)
         print(triangleIndices)
         print(triangleVertices)
-        print()
 
         # Yes, this only works because we know the previous triangle is at the ab side of the triangle
         # For a more complex mesh, we will have connections at all triangle sides

@@ -1,11 +1,14 @@
 # coding=utf-8
-"""Ilustrating different transformations"""
+"""
+Ilustrating different transformations.
+"""
 
 import glfw
 from OpenGL.GL import *
-import OpenGL.GL.shaders
 import numpy as np
-import sys, os.path
+import sys
+import os.path
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import grafica.basic_shapes as bs
 import grafica.easy_shaders as es
@@ -14,28 +17,25 @@ import grafica.transformations as tr
 __author__ = "Daniel Calderon"
 __license__ = "MIT"
 
-
 # We will use 32 bits data, so an integer has 4 bytes
 # 1 byte = 8 bits
 SIZE_IN_BYTES = 4
 
-
 # Transformation states that will operate over the shape
-TR_STANDARD      = 0
-TR_ROTATE_ZP     = 1
-TR_ROTATE_ZM     = 2
-TR_TRANSLATE     = 3
+TR_STANDARD = 0
+TR_ROTATE_ZP = 1
+TR_ROTATE_ZM = 2
+TR_TRANSLATE = 3
 TR_UNIFORM_SCALE = 4
 TR_NONUNIF_SCALE = 5
-TR_REFLEX_Y      = 6
-TR_SHEARING_XY   = 7
-
+TR_REFLEX_Y = 6
+TR_SHEARING_XY = 7
 
 # Shapes
-SP_TRIANGLE   = 0
-SP_QUAD       = 1
-SP_CUBE       = 2
-SP_CIRCLE     = 3
+SP_TRIANGLE = 0
+SP_QUAD = 1
+SP_CUBE = 2
+SP_CIRCLE = 3
 
 
 # A class to store the application control
@@ -51,7 +51,6 @@ controller = Controller()
 
 
 def getTransform(showTransform, theta):
-
     if showTransform == TR_STANDARD:
         return tr.identity()
 
@@ -74,21 +73,20 @@ def getTransform(showTransform, theta):
             1.0)
 
     elif showTransform == TR_REFLEX_Y:
-        return tr.scale(1,-1,1)
+        return tr.scale(1, -1, 1)
 
     elif showTransform == TR_SHEARING_XY:
         return tr.shearing(0.3 * np.cos(theta), 0, 0, 0, 0, 0)
-    
+
     else:
         # This should NEVER happend
         raise Exception()
 
 
 def on_key(window, key, scancode, action, mods):
-
     if action != glfw.PRESS:
         return
-    
+
     global controller
 
     if key == glfw.KEY_0:
@@ -209,7 +207,7 @@ if __name__ == "__main__":
         # Using GLFW to check for input events
         glfw.poll_events()
 
-        if (controller.fillPolygon):
+        if controller.fillPolygon:
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
         else:
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
@@ -222,25 +220,25 @@ if __name__ == "__main__":
             theta = glfw.get_time()
         else:
             theta = np.pi / 6
-        
+
         transform = getTransform(controller.showTransform, theta)
 
-        if (controller.shape == SP_TRIANGLE):
+        if controller.shape == SP_TRIANGLE:
             glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "transform"), 1, GL_TRUE, transform)
             pipeline.drawCall(gpuTriangle)
 
-        elif (controller.shape == SP_QUAD):
+        elif controller.shape == SP_QUAD:
             glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "transform"), 1, GL_TRUE, transform)
             pipeline.drawCall(gpuQuad)
 
-        elif (controller.shape == SP_CUBE):
-            Rx = tr.rotationX(np.pi/3)
-            Ry = tr.rotationY(np.pi/3)
+        elif controller.shape == SP_CUBE:
+            Rx = tr.rotationX(np.pi / 3)
+            Ry = tr.rotationY(np.pi / 3)
             transform = tr.matmul([Ry, Rx, transform])
             glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "transform"), 1, GL_TRUE, transform)
             pipeline.drawCall(gpuCube)
 
-        elif (controller.shape == SP_CIRCLE):
+        elif controller.shape == SP_CIRCLE:
             glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "transform"), 1, GL_TRUE, transform)
             pipeline.drawCall(gpuCircle)
 
@@ -256,5 +254,5 @@ if __name__ == "__main__":
     gpuQuad.clear()
     gpuCube.clear()
     gpuCircle.clear()
-    
+
     glfw.terminate()

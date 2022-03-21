@@ -1,11 +1,14 @@
 # coding=utf-8
-"""Drawing a simple cube with OpenGL"""
+"""
+Drawing a simple cube with OpenGL.
+"""
 
 import glfw
 from OpenGL.GL import *
 import OpenGL.GL.shaders
 import numpy as np
 import sys, os.path
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import grafica.basic_shapes as bs
 import grafica.easy_shaders as es
@@ -25,10 +28,9 @@ controller = Controller()
 
 
 def on_key(window, key, scancode, action, mods):
-
     if action != glfw.PRESS:
         return
-    
+
     global controller
 
     if key == glfw.KEY_SPACE:
@@ -78,7 +80,6 @@ if __name__ == "__main__":
     pipeline.setupVAO(gpuCube)
     gpuCube.fillBuffers(shapeCube.vertices, shapeCube.indices, GL_STATIC_DRAW)
 
-
     while not glfw.window_should_close(window):
         # Using GLFW to check for input events
         glfw.poll_events()
@@ -93,7 +94,7 @@ if __name__ == "__main__":
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
         theta = glfw.get_time()
-        Rx = tr.rotationX(np.pi/3)
+        Rx = tr.rotationX(np.pi / 3)
         Ry = tr.rotationY(theta)
         transform = np.matmul(Rx, Ry)
 

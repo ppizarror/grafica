@@ -1,24 +1,26 @@
 # coding=utf-8
-"""Dibujando 2 texturas en un mismo Fragment Shader"""
+"""
+Draw 2 textures inside same Fragment Shader.
+"""
 
 import glfw
 from OpenGL.GL import *
 import OpenGL.GL.shaders
-import numpy as np
 import sys
 import os.path
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import grafica.transformations as tr
 import grafica.basic_shapes as bs
 import grafica.easy_shaders as es
 from grafica.assets_path import getAssetPath
-
 from grafica.gpu_shape import GPUShape, SIZE_IN_BYTES
 
 __author__ = "Sebastián Olmos"
 __license__ = "MIT"
 
-# Nuevas clase para almacenar otra textura
+
+# New class to store another texture
 class TexGPUShape(GPUShape):
     def __init__(self):
         """VAO, VBO, EBO and texture handlers to GPU memory"""
@@ -35,11 +37,11 @@ class TexGPUShape(GPUShape):
         if self.texture2 != None:
             glDeleteTextures(1, [self.texture2])
 
+
 # Shader para entregar dos texturas
 class DoubleTextureTransformShaderProgram:
 
     def __init__(self):
-
         vertex_shader = """
             #version 330
 
@@ -93,9 +95,7 @@ class DoubleTextureTransformShaderProgram:
             OpenGL.GL.shaders.compileShader(vertex_shader, GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, GL_FRAGMENT_SHADER))
 
-
     def setupVAO(self, gpuShape):
-
         glBindVertexArray(gpuShape.vao)
 
         glBindBuffer(GL_ARRAY_BUFFER, gpuShape.vbo)
@@ -105,14 +105,13 @@ class DoubleTextureTransformShaderProgram:
         position = glGetAttribLocation(self.shaderProgram, "position")
         glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 20, ctypes.c_void_p(0))
         glEnableVertexAttribArray(position)
-        
+
         texCoords = glGetAttribLocation(self.shaderProgram, "texCoords")
         glVertexAttribPointer(texCoords, 2, GL_FLOAT, GL_FALSE, 20, ctypes.c_void_p(3 * SIZE_IN_BYTES))
         glEnableVertexAttribArray(texCoords)
 
         # Unbinding current vao
         glBindVertexArray(0)
-
 
     def drawCall(self, gpuShape, mode=GL_TRIANGLES):
         assert isinstance(gpuShape, TexGPUShape)
@@ -129,7 +128,7 @@ class DoubleTextureTransformShaderProgram:
 
         # Unbind the current VAO
         glBindVertexArray(0)
-        
+
 
 # A class to store the application control
 class Controller:
@@ -137,15 +136,15 @@ class Controller:
         self.fillPolygon = True
         self.mousePos = (0.0, 0.0)
 
+
 # global controller as communication with the callback function
 controller = Controller()
 
 
 def on_key(window, key, scancode, action, mods):
-
     if action != glfw.PRESS:
         return
-    
+
     global controller
 
     if key == glfw.KEY_SPACE:
@@ -157,9 +156,11 @@ def on_key(window, key, scancode, action, mods):
     else:
         print('Unknown key')
 
+
 def cursor_pos_callback(window, x, y):
     global controller
-    controller.mousePos = (x,y)
+    controller.mousePos = (x, y)
+
 
 if __name__ == "__main__":
 
@@ -185,7 +186,7 @@ if __name__ == "__main__":
 
     # A simple shader program with position and texture coordinates as inputs.
     pipeline = DoubleTextureTransformShaderProgram()
-    
+
     # Telling OpenGL to use our shader program
 
     # Setting up the clear screen color
@@ -201,7 +202,7 @@ if __name__ == "__main__":
     gpuShape.texture2 = es.textureSimpleSetup(
         getAssetPath("boo.png"), GL_REPEAT, GL_REPEAT, GL_NEAREST, GL_NEAREST)
 
-    currentMousePos = [width/2, height/2]
+    currentMousePos = [width / 2, height / 2]
 
     while not glfw.window_should_close(window):
         # Using GLFW to check for input events
@@ -228,7 +229,7 @@ if __name__ == "__main__":
 
         # Once the render is done, buffers are swapped, showing only the complete scene.
         glfw.swap_buffers(window)
-    
+
     # freeing GPU memory
     gpuShape.clear()
 

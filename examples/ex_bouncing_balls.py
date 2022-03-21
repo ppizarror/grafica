@@ -1,12 +1,14 @@
 # coding=utf-8
-"""Tarea 2"""
+"""
+Bouncing balls example.
+"""
 
 import glfw
 from OpenGL.GL import *
-import OpenGL.GL.shaders
 import numpy as np
 import sys
 import os.path
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import grafica.transformations as tr
 import grafica.basic_shapes as bs
@@ -14,22 +16,23 @@ import grafica.scene_graph as sg
 import grafica.easy_shaders as es
 import grafica.lighting_shaders as ls
 import grafica.performance_monitor as pm
-from grafica.assets_path import getAssetPath
 
 __author__ = "Ivan Sipiran"
 __license__ = "MIT"
+
 
 # A class to store the application control
 class Controller:
     def __init__(self):
         self.fillPolygon = True
         self.showAxis = True
-        self.viewPos = np.array([20,20,20])
+        self.viewPos = np.array([20, 20, 20])
         self.camUp = np.array([0, 1, 0])
         self.distance = 20
 
 
 controller = Controller()
+
 
 class Ball:
     def __init__(self, name, v0, p0):
@@ -39,29 +42,31 @@ class Ball:
         self.position = p0
         self.name = name
         self.rest = 0.7
-    
+
     def updatePosition(self, gravity, deltaTime):
         self.velocity += deltaTime * gravity
         self.position += self.velocity * deltaTime
-    
+
     def checkBounce(self):
         if self.position[1] < 0.01:
             self.velocity = -self.velocity * self.rest
-        
+
         if self.position[1] < 0:
             self.position[1] = 0
 
-gravity = np.array([0,-15,0], dtype=np.float32)
+
+gravity = np.array([0, -15, 0], dtype=np.float32)
+
 
 def setPlot(pipeline, mvpPipeline):
-    projection = tr.perspective(45, float(width)/float(height), 0.1, 100)
+    projection = tr.perspective(45, float(width) / float(height), 0.1, 100)
 
     glUseProgram(mvpPipeline.shaderProgram)
     glUniformMatrix4fv(glGetUniformLocation(mvpPipeline.shaderProgram, "projection"), 1, GL_TRUE, projection)
 
     glUseProgram(pipeline.shaderProgram)
     glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "projection"), 1, GL_TRUE, projection)
-    
+
     glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "La"), 1.0, 1.0, 1.0)
     glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ld"), 1.0, 1.0, 1.0)
     glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ls"), 1.0, 1.0, 1.0)
@@ -71,32 +76,33 @@ def setPlot(pipeline, mvpPipeline):
     glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ks"), 1.0, 1.0, 1.0)
 
     glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "lightPosition"), 5, 5, 5)
-    
+
     glUniform1ui(glGetUniformLocation(pipeline.shaderProgram, "shininess"), 1000)
     glUniform1f(glGetUniformLocation(pipeline.shaderProgram, "constantAttenuation"), 0.001)
     glUniform1f(glGetUniformLocation(pipeline.shaderProgram, "linearAttenuation"), 0.1)
     glUniform1f(glGetUniformLocation(pipeline.shaderProgram, "quadraticAttenuation"), 0.01)
 
+
 def setView(pipeline, mvpPipeline):
     view = tr.lookAt(
-            controller.viewPos,
-            np.array([0,0,0]),
-            controller.camUp
-        )
+        controller.viewPos,
+        np.array([0, 0, 0]),
+        controller.camUp
+    )
 
     glUseProgram(mvpPipeline.shaderProgram)
     glUniformMatrix4fv(glGetUniformLocation(mvpPipeline.shaderProgram, "view"), 1, GL_TRUE, view)
 
     glUseProgram(pipeline.shaderProgram)
     glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "view"), 1, GL_TRUE, view)
-    glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "viewPosition"), controller.viewPos[0], controller.viewPos[1], controller.viewPos[2])
-    
+    glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "viewPosition"), controller.viewPos[0],
+                controller.viewPos[1], controller.viewPos[2])
+
 
 def on_key(window, key, scancode, action, mods):
-
     if action != glfw.PRESS:
         return
-    
+
     global controller
 
     if key == glfw.KEY_SPACE:
@@ -107,37 +113,42 @@ def on_key(window, key, scancode, action, mods):
 
     elif key == glfw.KEY_ESCAPE:
         glfw.set_window_should_close(window, True)
-    
+
     elif key == glfw.KEY_1:
-        controller.viewPos = np.array([controller.distance,controller.distance,controller.distance]) #Vista diagonal 1
-        controller.camUp = np.array([0,1,0])
-    
+        controller.viewPos = np.array(
+            [controller.distance, controller.distance, controller.distance])  # Vista diagonal 1
+        controller.camUp = np.array([0, 1, 0])
+
     elif key == glfw.KEY_2:
-        controller.viewPos = np.array([0,0,controller.distance]) #Vista frontal
-        controller.camUp = np.array([0,1,0])
+        controller.viewPos = np.array([0, 0, controller.distance])  # Vista frontal
+        controller.camUp = np.array([0, 1, 0])
 
     elif key == glfw.KEY_3:
-        controller.viewPos = np.array([controller.distance,0,0]) #Vista lateral
-        controller.camUp = np.array([0,1,0])
+        controller.viewPos = np.array([controller.distance, 0, 0])  # Vista lateral
+        controller.camUp = np.array([0, 1, 0])
 
     elif key == glfw.KEY_4:
-        controller.viewPos = np.array([0,controller.distance,0]) #Vista superior
-        controller.camUp = np.array([1,0,0])
-    
+        controller.viewPos = np.array([0, controller.distance, 0])  # Vista superior
+        controller.camUp = np.array([1, 0, 0])
+
     elif key == glfw.KEY_5:
-        controller.viewPos = np.array([controller.distance,controller.distance,-controller.distance]) #Vista diagonal 2
-        controller.camUp = np.array([0,1,0])
-    
+        controller.viewPos = np.array(
+            [controller.distance, controller.distance, -controller.distance])  # Vista diagonal 2
+        controller.camUp = np.array([0, 1, 0])
+
     elif key == glfw.KEY_6:
-        controller.viewPos = np.array([-controller.distance,controller.distance,-controller.distance]) #Vista diagonal 2
-        controller.camUp = np.array([0,1,0])
-    
+        controller.viewPos = np.array(
+            [-controller.distance, controller.distance, -controller.distance])  # Vista diagonal 2
+        controller.camUp = np.array([0, 1, 0])
+
     elif key == glfw.KEY_7:
-        controller.viewPos = np.array([-controller.distance,controller.distance,controller.distance]) #Vista diagonal 2
-        controller.camUp = np.array([0,1,0])
-    
+        controller.viewPos = np.array(
+            [-controller.distance, controller.distance, controller.distance])  # Vista diagonal 2
+        controller.camUp = np.array([0, 1, 0])
+
     else:
         print('Unknown key')
+
 
 def createGPUShape(pipeline, shape):
     gpuShape = es.GPUShape().initBuffers()
@@ -146,22 +157,23 @@ def createGPUShape(pipeline, shape):
 
     return gpuShape
 
-#NOTA: Aqui creas tu escena. En escencia, sólo tendrías que modificar esta función.
+
+# NOTA: Aqui creas tu escena. En escencia, sólo tendrías que modificar esta función.
 def createScene(pipeline, balls):
     sphere = createGPUShape(pipeline, bs.createColorSphereTarea2(0.0, 0.59, 0.78))
-    
+
     sphereNode = sg.SceneGraphNode('sphere')
     sphereNode.transform = tr.uniformScale(0.1)
     sphereNode.childs += [sphere]
-
 
     scene = sg.SceneGraphNode('system')
     for ball in balls:
         node = sg.SceneGraphNode(ball.name)
         node.childs += [sphereNode]
         scene.childs += [node]
-    
+
     return scene
+
 
 if __name__ == "__main__":
 
@@ -186,7 +198,7 @@ if __name__ == "__main__":
     # Assembling the shader program (pipeline) with both shaders
     mvpPipeline = es.SimpleModelViewProjectionShaderProgram()
     pipeline = ls.SimpleGouraudShaderProgram()
-    
+
     # Telling OpenGL to use our shader program
     glUseProgram(mvpPipeline.shaderProgram)
 
@@ -204,16 +216,15 @@ if __name__ == "__main__":
     gpuAxis.fillBuffers(cpuAxis.vertices, cpuAxis.indices, GL_STATIC_DRAW)
 
     balls = []
-    ball1 = Ball('ball1', np.array([0,0,0], dtype=np.float32), np.array([5, 10, 2], dtype=np.float32))
+    ball1 = Ball('ball1', np.array([0, 0, 0], dtype=np.float32), np.array([5, 10, 2], dtype=np.float32))
     balls.append(ball1)
 
-    #NOTA: Aqui creas un objeto con tu escena
+    # NOTA: Aqui creas un objeto con tu escena
     dibujo = createScene(pipeline, balls)
 
     setPlot(pipeline, mvpPipeline)
 
     perfMonitor = pm.PerformanceMonitor(glfw.get_time(), 0.5)
-    
 
     # glfw will swap buffers as soon as possible
     glfw.swap_interval(0)
@@ -248,14 +259,12 @@ if __name__ == "__main__":
             nodeSphere = sg.findNode(dibujo, ball.name)
             ball.updatePosition(gravity, deltaTime)
             pos = ball.position
-            nodeSphere.transform=tr.translate(pos[0], pos[1], pos[2])
+            nodeSphere.transform = tr.translate(pos[0], pos[1], pos[2])
             ball.checkBounce()
-        
-        
-        #NOTA: Aquí dibujas tu objeto de escena
+
+        # NOTA: Aquí dibujas tu objeto de escena
         glUseProgram(pipeline.shaderProgram)
         sg.drawSceneGraphNode(dibujo, pipeline, "model")
-        
 
         # Once the render is done, buffers are swapped, showing only the complete scene.
         glfw.swap_buffers(window)
@@ -263,6 +272,5 @@ if __name__ == "__main__":
     # freeing GPU memory
     gpuAxis.clear()
     dibujo.clear()
-    
 
     glfw.terminate()
