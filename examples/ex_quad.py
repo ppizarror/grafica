@@ -7,6 +7,7 @@ import glfw
 from OpenGL.GL import *
 import OpenGL.GL.shaders
 import numpy as np
+import grafica
 
 __author__ = "Daniel Calderon"
 __license__ = "MIT"
@@ -178,7 +179,7 @@ if __name__ == "__main__":
         glfw.poll_events()
 
         # Filling or not the shapes depending on the controller state
-        if (controller.fillPolygon):
+        if controller.fillPolygon:
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
         else:
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)

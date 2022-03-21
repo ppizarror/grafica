@@ -2,10 +2,10 @@
 Grafica library.
 """
 
-import platform
+import platform as __platform
 
 # patch glfw for MACOS
-if platform.system() == 'Darwin':
+if __platform.system() == 'Darwin':
     import glfw as __glfw
 
 

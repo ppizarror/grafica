@@ -7,6 +7,7 @@ import glfw
 from OpenGL.GL import *
 import OpenGL.GL.shaders
 import numpy
+import grafica
 
 __author__ = "Daniel Calderon"
 __license__ = "MIT"
