@@ -2,21 +2,6 @@
 Instalación de python y librerias en OS X
 =======
 
-Primero hay que revisar si su sistema tiene python3 instalado, para esto abra su terminal
-
-Ejecute ``python`` o ``python3``. Si la respuesta es algo del tipo:
-
-    Python 3.6.6 (default, Sep 12 2018, 18:26:19)
-    [GCC 8.0.1 20180414 (experimental) [trunk revision 259383]] on linux
-    Type "help", "copyright", "credits" or "license" for more information.
-    >>>
-
-y la numeración de python es 3.6 o superior, felicidades, usted ya tiene python 3 instalado.
-
-Si la numeración indica python 2.7.x o similar, o el comando python3 no es encontrado, usted necesita instalar python 3.
-
-El símbolo >>> indica el lugar donde usted puede enviar comandos al intérprete de python. Ejecutando quit() usted cierra dicho intérprete.
-
 Instalación de Brew
 ---------------------
 
@@ -57,7 +42,8 @@ Instalación de python3
 
 En la terminal ejecute:
 
-    brew install python3
+    brew install --cask miniforge
+    conda init zsh
 
 Se le pedirá su contraseña de sistema, ingrésela y luego ingrese 'y' o 's' para comenzar la instalación.
 
@@ -66,22 +52,20 @@ Creando un environment
 
 Existen múltiples librerías para python. Algunas incompatibles entre si debido a distintos requerimientos de versiones. Es posible crear distintos ambientes de trabajo para tener ejecutables de python con distintas librerías específicas según sea el caso. Se recomienda instalar todas las librerías para el curso en un environment dedicado. Así no interfiere con pythons que pueda utilizar para otros fines.
 
-Luego cree un ambiente de python una carpeta de su home con ~/python-cg (puede utilizar otra ruta si lo desea).
+Para crear un entorno con conda ejecute lo siguiente en la terminal:
 
-    python3 -m venv ~/python-cg
+    conda create --name grafica python=3.9
 
-Si no funciona puede crear directamente la carpeta con el environment, ejecutando
-
-    python3 -m venv python-cg
+Esto creará el entorno "grafica" disponible en todo el sistema. Puede renombrar a cualquier otro, excepto "base".
 
 Instalando librerías
 --------------------
 
-Primero active su environment python3 con
+Primero active su nuevo entorno
 
-    source ~/python-cg/bin/activate
+    conda activate grafica
 
-Aparecerá (python-cg) al lado izquierdo de su prompt, indicando que dicho environment se encuentra activo.
+Aparecerá (grafica) al lado izquierdo de su prompt, indicando que dicho environment se encuentra activo.
 
 Puede probar que la versión de python activa es la que se encuentra en su environment con
 
@@ -89,15 +73,7 @@ Puede probar que la versión de python activa es la que se encuentra en su envir
 
 La respuesta debiera ser
 
-    /home/[username]/python-cg/bin/python
-
-También verifique pip, con:
-
-    which pip
-
-La respuesta debiera ser
-
-    /home/[username]/python-cg/bin/pip
+    /opt/homebrew/Caskroom/miniforge/base/envs/grafica/bin/python
 
 Instalemos algunas dependencias necesarias:
 
@@ -105,12 +81,12 @@ Instalemos algunas dependencias necesarias:
 
 Ahora instalamos todas las librerias python requeridas
 
-    pip install numpy scipy matplotlib ipython jupyter pyopengl glfw pillow
+    python -m pip install numpy scipy matplotlib ipython jupyter pyopengl glfw pillow
 
 Siempre es posible instalar cada librería por separado.
 
 Arreglar glfw
---------------------
+-------------
 
 Para que todos los programas corran correctamente debera agregar el siguiente bloque de codigo en la linea 1180
 
