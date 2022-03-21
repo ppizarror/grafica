@@ -1,12 +1,14 @@
 # coding=utf-8
-"""Textures and transformations in 3D"""
+"""
+Textures and transformations in 3D.
+"""
 
 import glfw
 from OpenGL.GL import *
-import OpenGL.GL.shaders
 import numpy as np
 import sys
 import os.path
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import grafica.transformations as tr
 import grafica.basic_shapes as bs
@@ -26,11 +28,11 @@ class Controller:
 # global controller as communication with the callback function
 controller = Controller()
 
-def on_key(window, key, scancode, action, mods):
 
+def on_key(window, key, scancode, action, mods):
     if action != glfw.PRESS:
         return
-    
+
     global controller
 
     if key == glfw.KEY_SPACE:
@@ -44,59 +46,57 @@ def on_key(window, key, scancode, action, mods):
 
 
 def createDice():
-
-    # Defining locations and texture coordinates for each vertex of the shape  
+    # Defining locations and texture coordinates for each vertex of the shape
     vertices = [
-    #   positions         texture coordinates
-    # Z+: number 1
-        -0.5, -0.5,  0.5, 0, 1/3,
-         0.5, -0.5,  0.5, 1/2, 1/3,
-         0.5,  0.5,  0.5, 1/2, 0,
-        -0.5,  0.5,  0.5, 0, 0,
+        #   positions         texture coordinates
+        # Z+: number 1
+        -0.5, -0.5, 0.5, 0, 1 / 3,
+        0.5, -0.5, 0.5, 1 / 2, 1 / 3,
+        0.5, 0.5, 0.5, 1 / 2, 0,
+        -0.5, 0.5, 0.5, 0, 0,
 
-    # Z-: number 6
-        -0.5, -0.5, -0.5, 1/2, 1,
-         0.5, -0.5, -0.5, 1, 1,
-         0.5,  0.5, -0.5, 1, 2/3,
-        -0.5,  0.5, -0.5, 1/2, 2/3,
-        
-    # X+: number 5
-         0.5, -0.5, -0.5, 0, 1,
-         0.5,  0.5, -0.5, 1/2, 1,
-         0.5,  0.5,  0.5, 1/2, 2/3,
-         0.5, -0.5,  0.5, 0, 2/3,
- 
-    # X-: number 2
-        -0.5, -0.5, -0.5, 1/2, 1/3,
-        -0.5,  0.5, -0.5, 1, 1/3,
-        -0.5,  0.5,  0.5, 1, 0,
-        -0.5, -0.5,  0.5, 1/2, 0,
+        # Z-: number 6
+        -0.5, -0.5, -0.5, 1 / 2, 1,
+        0.5, -0.5, -0.5, 1, 1,
+        0.5, 0.5, -0.5, 1, 2 / 3,
+        -0.5, 0.5, -0.5, 1 / 2, 2 / 3,
 
-    # Y+: number 4
-        -0.5,  0.5, -0.5, 1/2, 2/3,
-         0.5,  0.5, -0.5, 1, 2/3,
-         0.5,  0.5,  0.5, 1, 1/3,
-        -0.5,  0.5,  0.5, 1/2, 1/3,
+        # X+: number 5
+        0.5, -0.5, -0.5, 0, 1,
+        0.5, 0.5, -0.5, 1 / 2, 1,
+        0.5, 0.5, 0.5, 1 / 2, 2 / 3,
+        0.5, -0.5, 0.5, 0, 2 / 3,
 
-    # Y-: number 3
-        -0.5, -0.5, -0.5, 0, 2/3,
-         0.5, -0.5, -0.5, 1/2, 2/3,
-         0.5, -0.5,  0.5, 1/2, 1/3,
-        -0.5, -0.5,  0.5, 0, 1/3
-        ]
+        # X-: number 2
+        -0.5, -0.5, -0.5, 1 / 2, 1 / 3,
+        -0.5, 0.5, -0.5, 1, 1 / 3,
+        -0.5, 0.5, 0.5, 1, 0,
+        -0.5, -0.5, 0.5, 1 / 2, 0,
+
+        # Y+: number 4
+        -0.5, 0.5, -0.5, 1 / 2, 2 / 3,
+        0.5, 0.5, -0.5, 1, 2 / 3,
+        0.5, 0.5, 0.5, 1, 1 / 3,
+        -0.5, 0.5, 0.5, 1 / 2, 1 / 3,
+
+        # Y-: number 3
+        -0.5, -0.5, -0.5, 0, 2 / 3,
+        0.5, -0.5, -0.5, 1 / 2, 2 / 3,
+        0.5, -0.5, 0.5, 1 / 2, 1 / 3,
+        -0.5, -0.5, 0.5, 0, 1 / 3
+    ]
 
     # Defining connections among vertices
     # We have a triangle every 3 indices specified
     indices = [
-          0, 1, 2, 2, 3, 0, # Z+
-          7, 6, 5, 5, 4, 7, # Z-
-          8, 9,10,10,11, 8, # X+
-         15,14,13,13,12,15, # X-
-         19,18,17,17,16,19, # Y+
-         20,21,22,22,23,20] # Y-
+        0, 1, 2, 2, 3, 0,  # Z+
+        7, 6, 5, 5, 4, 7,  # Z-
+        8, 9, 10, 10, 11, 8,  # X+
+        15, 14, 13, 13, 12, 15,  # X-
+        19, 18, 17, 17, 16, 19,  # Y+
+        20, 21, 22, 22, 23, 20]  # Y-
 
     return bs.Shape(vertices, indices)
-
 
 
 if __name__ == "__main__":
@@ -159,13 +159,13 @@ if __name__ == "__main__":
         projection = tr.ortho(-1, 1, -1, 1, 0.1, 100)
 
         view = tr.lookAt(
-            np.array([10,10,5]),
-            np.array([0,0,0]),
-            np.array([0,0,1])
+            np.array([10, 10, 5]),
+            np.array([0, 0, 0]),
+            np.array([0, 0, 1])
         )
 
         theta = glfw.get_time()
-        axis = np.array([1,-1,1])
+        axis = np.array([1, -1, 1])
         axis = axis / np.linalg.norm(axis)
         model = tr.rotationA(theta, axis)
 
@@ -178,10 +178,11 @@ if __name__ == "__main__":
 
         # Drawing dice (with texture, another shader program)
         glUseProgram(textureShaderProgram.shaderProgram)
-        glUniformMatrix4fv(glGetUniformLocation(textureShaderProgram.shaderProgram, "projection"), 1, GL_TRUE, projection)
+        glUniformMatrix4fv(glGetUniformLocation(textureShaderProgram.shaderProgram, "projection"), 1, GL_TRUE,
+                           projection)
         glUniformMatrix4fv(glGetUniformLocation(textureShaderProgram.shaderProgram, "view"), 1, GL_TRUE, view)
         glUniformMatrix4fv(glGetUniformLocation(textureShaderProgram.shaderProgram, "model"), 1, GL_TRUE, model)
-        textureShaderProgram.drawCall(gpuDice)        
+        textureShaderProgram.drawCall(gpuDice)
 
         # Once the drawing is rendered, buffers are swap so an uncomplete drawing is never seen.
         glfw.swap_buffers(window)

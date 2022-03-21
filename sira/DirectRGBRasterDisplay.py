@@ -3,6 +3,8 @@
 Simple simulator for an RGB Raster display with a direct color scheme.
 """
 
+__all__ = ['DirectRGBRasterDisplay']
+
 import glfw
 from OpenGL.GL import *
 import OpenGL.GL.shaders
