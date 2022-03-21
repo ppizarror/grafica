@@ -1,8 +1,17 @@
 # coding=utf-8
 """
-Simple Text Renderer using OpenGL Textures
+Simple Text Renderer using OpenGL Textures.
 Font: IBM text mode 8x8
 """
+
+__all__ = [
+    'generateTextBitsTexture',
+    'getCharacterShape',
+    'textToShape',
+    'TextureTextRendererShaderProgram',
+    'toBit',
+    'toOpenGLTexture'
+]
 
 from OpenGL.GL import *
 import OpenGL.GL.shaders
@@ -20,11 +29,10 @@ def toBit(number, bit):
 
 
 def generateTextBitsTexture():
+    assert f88.font8x8_basic.shape == (128, 8)
 
-    assert f88.font8x8_basic.shape == (128,8)
+    bits = np.zeros(shape=(8, 8, 128), dtype=np.uint8)
 
-    bits = np.zeros(shape=(8,8,128), dtype=np.uint8)
-    
     for k in range(128):
         for i in range(8):
             row = f88.font8x8_basic[k, i]
@@ -41,11 +49,10 @@ def generateTextBitsTexture():
 
 
 def toOpenGLTexture(textBitsTexture):
-
     assert textBitsTexture.shape == (8, 8, 128)
 
     data = np.copy(textBitsTexture)
-    data.reshape((8*8*128,1), order='C')
+    data.reshape((8 * 8 * 128, 1), order='C')
 
     texture = glGenTextures(1)
     glBindTexture(GL_TEXTURE_3D, texture)
@@ -65,7 +72,6 @@ def toOpenGLTexture(textBitsTexture):
 
 
 def getCharacterShape(char):
-
     # Getting the unicode code of the character as int
     # Example: ord('a') = 97
     k = ord(char)
@@ -81,17 +87,16 @@ def getCharacterShape(char):
 
     indices = [
         # Bottom right triangle
-        0,1,2,\
+        0, 1, 2, \
         # Top left triangle
-        2,3,0
+        2, 3, 0
     ]
 
     return bs.Shape(vertices, indices)
 
 
 def textToShape(text, charWidth, charHeight):
-
-    shape = bs.Shape([],[])
+    shape = bs.Shape([], [])
 
     for i in range(len(text)):
         char = text[i]
@@ -103,11 +108,9 @@ def textToShape(text, charWidth, charHeight):
     return shape
 
 
-
 class TextureTextRendererShaderProgram:
 
     def __init__(self):
-
         vertex_shader = """
             #version 330
 
@@ -155,11 +158,9 @@ class TextureTextRendererShaderProgram:
         VAO = glGenVertexArrays(1)
         glBindVertexArray(VAO)
 
-
         self.shaderProgram = OpenGL.GL.shaders.compileProgram(
             OpenGL.GL.shaders.compileShader(vertex_shader, GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, GL_FRAGMENT_SHADER))
-
 
     def setupVAO(self, gpuShape):
         glBindVertexArray(gpuShape.vao)
@@ -171,14 +172,13 @@ class TextureTextRendererShaderProgram:
         position = glGetAttribLocation(self.shaderProgram, "position")
         glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 24, ctypes.c_void_p(0))
         glEnableVertexAttribArray(position)
-        
+
         texCoords = glGetAttribLocation(self.shaderProgram, "texCoords")
         glVertexAttribPointer(texCoords, 3, GL_FLOAT, GL_FALSE, 24, ctypes.c_void_p(12))
         glEnableVertexAttribArray(texCoords)
 
         # Unbinding current vao
         glBindVertexArray(0)
-
 
     def drawCall(self, gpuShape, mode=GL_TRIANGLES):
         assert isinstance(gpuShape, es.GPUShape)
@@ -187,8 +187,6 @@ class TextureTextRendererShaderProgram:
         glBindVertexArray(gpuShape.vao)
         glBindTexture(GL_TEXTURE_3D, gpuShape.texture)
         glDrawElements(mode, gpuShape.size, GL_UNSIGNED_INT, None)
-        
+
         # Unbind the current VAO
         glBindVertexArray(0)
-
-

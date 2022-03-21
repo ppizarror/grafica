@@ -4,19 +4,30 @@ Vertices and indices for a variety of simple shapes.
 """
 
 __all__ = [
-    'Shape',
+    'applyOffset',
+    'createAxis',
+    'createColorCircle',
+    'createColorConeOFF',
+    'createColorCube',
+    'createColorCubeOFF',
+    'createColorCylinderOFF',
+    'createColorNormalsCube',
+    'createColorQuad',
+    'createColorSphereOFF',
+    'createFacetedCube',
+    'createRainbowCircle',
+    'createRainbowCube',
+    'createRainbowNormalsCube',
+    'createRainbowQuad',
+    'createRainbowTriangle',
+    'createTextureCube',
+    'createTextureNormalsCube',
+    'createTextureQuad',
+    'createTextureQuadWithNormal',
     'merge',
     'readOFF',
-    'createAxis',
-    'applyOffset',
     'scaleVertices',
-    'createColorCube',
-    'createColorQuad',
-    'createColorCircle',
-    'createFacetedCube',
-    'createRainbowCube',
-    'createTextureCube',
-    'createRainbowCircle',
+    'Shape'
 ]
 
 import math
@@ -340,19 +351,19 @@ def readOFF(filename, color):
         return Shape(vertexDataF, indices)
 
 
-def createColorCubeTarea2(r, g, b):
+def createColorCubeOFF(r, g, b):
     return readOFF(getAssetPath('cube.off'), (r, g, b))
 
 
-def createColorSphereTarea2(r, g, b):
+def createColorSphereOFF(r, g, b):
     return readOFF(getAssetPath('sphere.off'), (r, g, b))
 
 
-def createColorCylinderTarea2(r, g, b):
+def createColorCylinderOFF(r, g, b):
     return readOFF(getAssetPath('cylinder.off'), (r, g, b))
 
 
-def createColorConeTarea2(r, g, b):
+def createColorConeOFF(r, g, b):
     return readOFF(getAssetPath('cone.off'), (r, g, b))
 
 

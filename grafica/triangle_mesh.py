@@ -1,8 +1,17 @@
 # coding=utf-8
-"""Face based data structure for a triangle mesh"""
+"""
+Face based data structure for a triangle mesh.
+"""
+
+__all__ = [
+    'Triangle',
+    'TriangleFaceMesh',
+    'TriangleFaceMeshBuilder'
+]
 
 __author__ = "Daniel Calderon"
 __license__ = "MIT"
+
 
 class Triangle:
     def __init__(self, a, b, c):
@@ -11,10 +20,11 @@ class Triangle:
         self.c = c
 
     def __str__(self):
-        return "Triangle(" +\
-            str(self.a) + ", " +\
-            str(self.b) + ", " +\
-            str(self.c) + ")"
+        return "Triangle(" + \
+               str(self.a) + ", " + \
+               str(self.b) + ", " + \
+               str(self.c) + ")"
+
 
 class TriangleFaceMesh:
     def __init__(self, data):
@@ -26,18 +36,18 @@ class TriangleFaceMesh:
     def __str__(self):
         output = "TriangleFaceMesh{\n"
         output += "\tdata :" + str(self.data) + "\n"
-        
+
         def getIndexIfNotNone(side, quadFaceMesh):
             if quadFaceMesh != None:
-                return "\t" + side + ": " +\
-                    str(quadFaceMesh.data) + "\n"
+                return "\t" + side + ": " + \
+                       str(quadFaceMesh.data) + "\n"
             return ""
-        
+
         output += getIndexIfNotNone("ab", self.ab)
         output += getIndexIfNotNone("bc", self.bc)
         output += getIndexIfNotNone("ca", self.ca)
         output += "}\n"
-        
+
         return output
 
 
@@ -49,13 +59,12 @@ class TriangleFaceMeshBuilder:
         # so 2 triangles can be connected over each edge
         self.previousEdges = {}
 
-
     def connectToPreviousTriangle(self, tail, head, side, triangleFaceMeshIndex):
-        
+
         triangleFaceMesh = self.triangleMeshes[triangleFaceMeshIndex]
 
         # We have only 2 possibilities of connection: tail->head and head->tail
-        
+
         # Once we have the connection we do not need to keep the edge on memory
         # This is assuming the user will provide valid data.
         if (tail, head) in self.previousEdges:
@@ -81,7 +90,7 @@ class TriangleFaceMeshBuilder:
         elif previousSide == "bc":
             previousTriangleMesh.bc = triangleFaceMesh
         else:
-            assert(previousSide == "ca")
+            assert (previousSide == "ca")
             previousTriangleMesh.ca = triangleFaceMesh
 
         if side == "ab":
@@ -89,10 +98,9 @@ class TriangleFaceMeshBuilder:
         elif side == "bc":
             triangleFaceMesh.bc = previousTriangleMesh
         else:
-            assert(side == "ca")
+            assert (side == "ca")
             triangleFaceMesh.ca = previousTriangleMesh
 
-        
     def addTriangle(self, newTriangle):
 
         triangleFaceMeshIndex = len(self.triangleMeshes)
@@ -103,10 +111,5 @@ class TriangleFaceMeshBuilder:
         self.connectToPreviousTriangle(newTriangle.b, newTriangle.c, "bc", triangleFaceMeshIndex)
         self.connectToPreviousTriangle(newTriangle.c, newTriangle.a, "ca", triangleFaceMeshIndex)
 
-    
     def getTriangleFaceMeshes(self):
         return self.triangleMeshes
-
-        
-
-        

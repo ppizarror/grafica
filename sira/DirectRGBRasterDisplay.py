@@ -1,12 +1,12 @@
 # coding=utf-8
-"""Simple simulator for an RGB Raster display with a direct color scheme"""
-
+"""
+Simple simulator for an RGB Raster display with a direct color scheme.
+"""
 
 import glfw
 from OpenGL.GL import *
 import OpenGL.GL.shaders
 import numpy as np
-import sys
 
 __author__ = "Daniel Calderon"
 __license__ = "MIT"
@@ -18,6 +18,7 @@ class Shape:
         self.vertices = vertices
         self.indices = indices
         self.textureFileName = textureFileName
+
 
 # We will use 32 bits data, so we have 4 bytes
 # 1 byte = 8 bits
@@ -37,7 +38,6 @@ class GPUShape:
 class SimpleShaderProgram:
 
     def __init__(self):
-
         vertex_shader = """
             #version 330
 
@@ -67,7 +67,6 @@ class SimpleShaderProgram:
             OpenGL.GL.shaders.compileShader(vertex_shader, GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, GL_FRAGMENT_SHADER))
 
-
     def drawShape(self, shape, mode=GL_TRIANGLES):
         assert isinstance(shape, GPUShape)
 
@@ -80,7 +79,7 @@ class SimpleShaderProgram:
         position = glGetAttribLocation(self.shaderProgram, "position")
         glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 24, ctypes.c_void_p(0))
         glEnableVertexAttribArray(position)
-        
+
         color = glGetAttribLocation(self.shaderProgram, "color")
         glVertexAttribPointer(color, 3, GL_FLOAT, GL_FALSE, 24, ctypes.c_void_p(12))
         glEnableVertexAttribArray(color)
@@ -89,11 +88,9 @@ class SimpleShaderProgram:
         glDrawElements(mode, shape.size, GL_UNSIGNED_INT, None)
 
 
-
 class SimpleTextureShaderProgram:
 
     def __init__(self):
-
         vertex_shader = """
             #version 330
 
@@ -128,7 +125,6 @@ class SimpleTextureShaderProgram:
             OpenGL.GL.shaders.compileShader(vertex_shader, GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, GL_FRAGMENT_SHADER))
 
-
     def drawShape(self, shape, mode=GL_TRIANGLES):
         assert isinstance(shape, GPUShape)
 
@@ -142,7 +138,7 @@ class SimpleTextureShaderProgram:
         position = glGetAttribLocation(self.shaderProgram, "position")
         glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 20, ctypes.c_void_p(0))
         glEnableVertexAttribArray(position)
-        
+
         texCoords = glGetAttribLocation(self.shaderProgram, "texCoords")
         glVertexAttribPointer(texCoords, 2, GL_FLOAT, GL_FALSE, 20, ctypes.c_void_p(12))
         glEnableVertexAttribArray(texCoords)
@@ -178,8 +174,7 @@ def toGPUShape(shape):
 
 # A class to store the application control
 class Controller:
-    
-    
+
     def __init__(self):
         self.fillPolygon = True
         self.showGrid = True
@@ -187,39 +182,38 @@ class Controller:
 
 def createGPUTextureQuad():
     vertices = [
-    #   positions   texture
-        -1, -1, 0,  1, 0,
-         1, -1, 0,  1, 1,
-         1,  1, 0,  0, 1,
-        -1,  1, 0,  0, 0]
+        #   positions   texture
+        -1, -1, 0, 1, 0,
+        1, -1, 0, 1, 1,
+        1, 1, 0, 0, 1,
+        -1, 1, 0, 0, 0]
 
     # Defining connections among vertices
     # We have a triangle every 3 indices specified
     indices = [
-         0, 1, 2,
-         2, 3, 0]
+        0, 1, 2,
+        2, 3, 0]
 
     return Shape(vertices, indices)
 
 
 def createGrid(Nx, Ny):
-
     vertices = []
     indices = []
     index = 0
 
     # cols
     for x in np.linspace(-1, 1, Nx + 1, True):
-        vertices += [x, -1, 0] + [0,0,0]
-        vertices += [x,  1, 0] + [0,0,0]
-        indices += [index, index+1]
+        vertices += [x, -1, 0] + [0, 0, 0]
+        vertices += [x, 1, 0] + [0, 0, 0]
+        indices += [index, index + 1]
         index += 2
 
     # rows
     for y in np.linspace(-1, 1, Ny + 1, True):
-        vertices += [-1, y, 0] + [0,0,0]
-        vertices += [ 1, y, 0] + [0,0,0]
-        indices += [index, index+1]
+        vertices += [-1, y, 0] + [0, 0, 0]
+        vertices += [1, y, 0] + [0, 0, 0]
+        indices += [index, index + 1]
         index += 2
 
     return Shape(vertices, indices)
@@ -227,24 +221,21 @@ def createGrid(Nx, Ny):
 
 class DirectRGBRasterDisplay:
 
-
     def __init__(self, windowSize, imageSize, displayName):
         self.windowSize = windowSize
         self.imageSize = imageSize
         self.displayName = displayName
         self.controller = Controller()
 
-
     def setMatrix(self, matrix):
-        assert(self.imageSize[0] == matrix.shape[0])
-        assert(self.imageSize[1] == matrix.shape[1])
-        
+        assert (self.imageSize[0] == matrix.shape[0])
+        assert (self.imageSize[1] == matrix.shape[1])
+
         # RGB 8 bits for each channel 
-        assert(matrix.shape[2] == 3)
-        assert(matrix.dtype == np.uint8)
+        assert (matrix.shape[2] == 3)
+        assert (matrix.dtype == np.uint8)
 
         self.imgData = matrix.reshape((matrix.shape[0] * matrix.shape[1], 3))
-
 
     def on_key(self, window, key, scancode, action, mods):
 
@@ -257,23 +248,22 @@ class DirectRGBRasterDisplay:
         elif key == glfw.KEY_ESCAPE:
             glfw.set_window_should_close(self.window, True)
 
-
     def draw(self):
         # Initialize glfw
         if not glfw.init():
             glfw.set_window_should_close(window, True)
-    
+
         self.window = glfw.create_window(self.windowSize[0], self.windowSize[1], self.displayName, None, None)
         glfw.make_context_current(self.window)
         glfw.set_key_callback(self.window, self.on_key)
-        
+
         self.pipeline = SimpleTextureShaderProgram()
-        
+
         self.colorPipeline = SimpleShaderProgram()
 
         gpuShape = toGPUShape(createGPUTextureQuad())
         gpuGrid = toGPUShape(createGrid(self.imageSize[0], self.imageSize[1]))
-        
+
         gpuShape.texture = glGenTextures(1)
         glBindTexture(GL_TEXTURE_2D, gpuShape.texture)
 
@@ -288,7 +278,8 @@ class DirectRGBRasterDisplay:
         internalFormat = GL_RGB
         format = GL_RGB
 
-        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, self.imageSize[1], self.imageSize[0], 0, format, GL_UNSIGNED_BYTE, self.imgData)
+        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, self.imageSize[1], self.imageSize[0], 0, format,
+                     GL_UNSIGNED_BYTE, self.imgData)
 
         while not glfw.window_should_close(self.window):
             glfw.poll_events()
@@ -297,17 +288,15 @@ class DirectRGBRasterDisplay:
                 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
 
             glClear(GL_COLOR_BUFFER_BIT)
-        
+
             glUseProgram(self.pipeline.shaderProgram)
             self.pipeline.drawShape(gpuShape)
-        
+
             if self.controller.showGrid:
                 glUseProgram(self.colorPipeline.shaderProgram)
                 self.colorPipeline.drawShape(gpuGrid, GL_LINES)
 
             # Once the render is done, buffers are swapped, showing only the complete scene.
             glfw.swap_buffers(self.window)
-    
+
         glfw.terminate()
-
-

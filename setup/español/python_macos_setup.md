@@ -81,7 +81,7 @@ Instalemos algunas dependencias necesarias:
 
 Ahora instalamos todas las librerias python requeridas
 
-    python -m pip install numpy scipy matplotlib ipython jupyter pyopengl glfw pillow
+    python -m pip install numpy scipy matplotlib ipython jupyter pyopengl glfw pillow openmesh imgui open3d
 
 Siempre es posible instalar cada librería por separado.
 

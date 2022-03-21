@@ -2,4 +2,3 @@
 
 from .DirectRGBRasterDisplay import DirectRGBRasterDisplay
 from .IndirectRGBRasterDisplay import IndirectRGBRasterDisplay
-

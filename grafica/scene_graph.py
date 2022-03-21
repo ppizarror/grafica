@@ -3,8 +3,15 @@
 A simple scene graph class and functionality.
 """
 
+__all__ = [
+    'drawSceneGraphNode',
+    'findNode',
+    'findPosition',
+    'findTransform',
+    'SceneGraphNode'
+]
+
 from OpenGL.GL import *
-import OpenGL.GL.shaders
 import numpy as np
 import grafica.transformations as tr
 import grafica.gpu_shape as gs

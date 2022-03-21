@@ -3,12 +3,20 @@
 Simple Shaders.
 """
 
+__all__ = [
+    'SimpleModelViewProjectionShaderProgram',
+    'SimpleShaderProgram',
+    'SimpleTextureModelViewProjectionShaderProgram',
+    'SimpleTextureShaderProgram',
+    'SimpleTextureTransformShaderProgram',
+    'SimpleTransformShaderProgram',
+    'textureSimpleSetup'
+]
+
 from OpenGL.GL import *
 import OpenGL.GL.shaders
 import numpy as np
 from PIL import Image
-
-import grafica.basic_shapes as bs
 from grafica.gpu_shape import GPUShape
 
 __author__ = "Daniel Calderon"

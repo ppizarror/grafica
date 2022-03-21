@@ -1,7 +1,10 @@
 # coding=utf-8
-"""A convenience class container to reference a shape on GPU memory"""
+"""
+A convenience class container to reference a shape on GPU memory.
+"""
 
-#import OpenGL.GL as ogl
+__all__ = ['GPUShape']
+
 from OpenGL.GL import *
 import numpy as np
 
@@ -12,10 +15,11 @@ __license__ = "MIT"
 # 1 byte = 8 bits
 SIZE_IN_BYTES = 4
 
+
 class GPUShape:
     def __init__(self):
         """VAO, VBO, EBO and texture handlers to GPU memory"""
-        
+
         self.vao = None
         self.vbo = None
         self.ebo = None
@@ -36,10 +40,10 @@ class GPUShape:
         return self
 
     def __str__(self):
-        return "vao=" + str(self.vao) +\
-            "  vbo=" + str(self.vbo) +\
-            "  ebo=" + str(self.ebo) +\
-            "  tex=" + str(self.texture)
+        return "vao=" + str(self.vao) + \
+               "  vbo=" + str(self.vbo) + \
+               "  ebo=" + str(self.ebo) + \
+               "  tex=" + str(self.texture)
 
     def fillBuffers(self, vertices, indices, usage):
 
@@ -59,7 +63,7 @@ class GPUShape:
 
         if self.texture != None:
             glDeleteTextures(1, [self.texture])
-        
+
         if self.ebo != None:
             glDeleteBuffers(1, [self.ebo])
 
@@ -68,4 +72,3 @@ class GPUShape:
 
         if self.vao != None:
             glDeleteVertexArrays(1, [self.vao])
-        

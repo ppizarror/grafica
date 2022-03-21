@@ -1,5 +1,18 @@
 # coding=utf-8
-"""Lighting Shaders"""
+"""
+Lighting Shaders.
+"""
+
+__all__ = [
+    'MultipleLightPhongShaderProgram',
+    'MultipleLightTexturePhongShaderProgram',
+    'SimpleFlatShaderProgram',
+    'SimpleGouraudShaderProgram',
+    'SimplePhongShaderProgram',
+    'SimpleTextureFlatShaderProgram',
+    'SimpleTextureGouraudShaderProgram',
+    'SimpleTexturePhongShaderProgram'
+]
 
 from OpenGL.GL import *
 import OpenGL.GL.shaders
@@ -7,13 +20,14 @@ from grafica.gpu_shape import GPUShape
 
 import sys
 import os.path
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from grafica.assets_path import getAssetPath
+
 
 class SimpleFlatShaderProgram():
 
     def __init__(self):
-
         vertex_shader = """
             #version 330
 
@@ -88,14 +102,11 @@ class SimpleFlatShaderProgram():
         VAO = glGenVertexArrays(1)
         glBindVertexArray(VAO)
 
-
         self.shaderProgram = OpenGL.GL.shaders.compileProgram(
             OpenGL.GL.shaders.compileShader(vertex_shader, OpenGL.GL.GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, OpenGL.GL.GL_FRAGMENT_SHADER))
 
-
     def setupVAO(self, gpuShape):
-
         glBindVertexArray(gpuShape.vao)
 
         glBindBuffer(GL_ARRAY_BUFFER, gpuShape.vbo)
@@ -105,7 +116,7 @@ class SimpleFlatShaderProgram():
         position = glGetAttribLocation(self.shaderProgram, "position")
         glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 36, ctypes.c_void_p(0))
         glEnableVertexAttribArray(position)
-        
+
         color = glGetAttribLocation(self.shaderProgram, "color")
         glVertexAttribPointer(color, 3, GL_FLOAT, GL_FALSE, 36, ctypes.c_void_p(12))
         glEnableVertexAttribArray(color)
@@ -116,7 +127,6 @@ class SimpleFlatShaderProgram():
 
         # Unbinding current vao
         glBindVertexArray(0)
-
 
     def drawCall(self, gpuShape, mode=GL_TRIANGLES):
         assert isinstance(gpuShape, GPUShape)
@@ -132,7 +142,6 @@ class SimpleFlatShaderProgram():
 class SimpleTextureFlatShaderProgram():
 
     def __init__(self):
-
         vertex_shader = """
             #version 330
 
@@ -214,14 +223,11 @@ class SimpleTextureFlatShaderProgram():
         VAO = glGenVertexArrays(1)
         glBindVertexArray(VAO)
 
-
         self.shaderProgram = OpenGL.GL.shaders.compileProgram(
             OpenGL.GL.shaders.compileShader(vertex_shader, OpenGL.GL.GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, OpenGL.GL.GL_FRAGMENT_SHADER))
 
-
     def setupVAO(self, gpuShape):
-
         glBindVertexArray(gpuShape.vao)
 
         glBindBuffer(GL_ARRAY_BUFFER, gpuShape.vbo)
@@ -231,7 +237,7 @@ class SimpleTextureFlatShaderProgram():
         position = glGetAttribLocation(self.shaderProgram, "position")
         glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(0))
         glEnableVertexAttribArray(position)
-        
+
         color = glGetAttribLocation(self.shaderProgram, "texCoords")
         glVertexAttribPointer(color, 2, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(12))
         glEnableVertexAttribArray(color)
@@ -242,7 +248,6 @@ class SimpleTextureFlatShaderProgram():
 
         # Unbinding current vao
         glBindVertexArray(0)
-
 
     def drawCall(self, gpuShape, mode=GL_TRIANGLES):
         assert isinstance(gpuShape, GPUShape)
@@ -260,7 +265,6 @@ class SimpleTextureFlatShaderProgram():
 class SimpleGouraudShaderProgram():
 
     def __init__(self):
-
         vertex_shader = """
             #version 330
 
@@ -335,14 +339,11 @@ class SimpleGouraudShaderProgram():
         VAO = glGenVertexArrays(1)
         glBindVertexArray(VAO)
 
-
         self.shaderProgram = OpenGL.GL.shaders.compileProgram(
             OpenGL.GL.shaders.compileShader(vertex_shader, OpenGL.GL.GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, OpenGL.GL.GL_FRAGMENT_SHADER))
 
-
     def setupVAO(self, gpuShape):
-
         glBindVertexArray(gpuShape.vao)
 
         glBindBuffer(GL_ARRAY_BUFFER, gpuShape.vbo)
@@ -352,7 +353,7 @@ class SimpleGouraudShaderProgram():
         position = glGetAttribLocation(self.shaderProgram, "position")
         glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 36, ctypes.c_void_p(0))
         glEnableVertexAttribArray(position)
-        
+
         color = glGetAttribLocation(self.shaderProgram, "color")
         glVertexAttribPointer(color, 3, GL_FLOAT, GL_FALSE, 36, ctypes.c_void_p(12))
         glEnableVertexAttribArray(color)
@@ -363,7 +364,6 @@ class SimpleGouraudShaderProgram():
 
         # Unbinding current vao
         glBindVertexArray(0)
-
 
     def drawCall(self, gpuShape, mode=GL_TRIANGLES):
         assert isinstance(gpuShape, GPUShape)
@@ -379,7 +379,6 @@ class SimpleGouraudShaderProgram():
 class SimpleTextureGouraudShaderProgram():
 
     def __init__(self):
-
         vertex_shader = """
             #version 330
 
@@ -461,14 +460,11 @@ class SimpleTextureGouraudShaderProgram():
         VAO = glGenVertexArrays(1)
         glBindVertexArray(VAO)
 
-
         self.shaderProgram = OpenGL.GL.shaders.compileProgram(
             OpenGL.GL.shaders.compileShader(vertex_shader, OpenGL.GL.GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, OpenGL.GL.GL_FRAGMENT_SHADER))
 
-
     def setupVAO(self, gpuShape):
-
         glBindVertexArray(gpuShape.vao)
 
         glBindBuffer(GL_ARRAY_BUFFER, gpuShape.vbo)
@@ -478,7 +474,7 @@ class SimpleTextureGouraudShaderProgram():
         position = glGetAttribLocation(self.shaderProgram, "position")
         glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(0))
         glEnableVertexAttribArray(position)
-        
+
         color = glGetAttribLocation(self.shaderProgram, "texCoords")
         glVertexAttribPointer(color, 2, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(12))
         glEnableVertexAttribArray(color)
@@ -489,7 +485,6 @@ class SimpleTextureGouraudShaderProgram():
 
         # Unbinding current vao
         glBindVertexArray(0)
-
 
     def drawCall(self, gpuShape, mode=GL_TRIANGLES):
         assert isinstance(gpuShape, GPUShape)
@@ -588,14 +583,11 @@ class SimplePhongShaderProgram:
         VAO = glGenVertexArrays(1)
         glBindVertexArray(VAO)
 
-
         self.shaderProgram = OpenGL.GL.shaders.compileProgram(
             OpenGL.GL.shaders.compileShader(vertex_shader, OpenGL.GL.GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, OpenGL.GL.GL_FRAGMENT_SHADER))
 
-
     def setupVAO(self, gpuShape):
-
         glBindVertexArray(gpuShape.vao)
 
         glBindBuffer(GL_ARRAY_BUFFER, gpuShape.vbo)
@@ -605,7 +597,7 @@ class SimplePhongShaderProgram:
         position = glGetAttribLocation(self.shaderProgram, "position")
         glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 36, ctypes.c_void_p(0))
         glEnableVertexAttribArray(position)
-        
+
         color = glGetAttribLocation(self.shaderProgram, "color")
         glVertexAttribPointer(color, 3, GL_FLOAT, GL_FALSE, 36, ctypes.c_void_p(12))
         glEnableVertexAttribArray(color)
@@ -616,7 +608,6 @@ class SimplePhongShaderProgram:
 
         # Unbinding current vao
         glBindVertexArray(0)
-
 
     def drawCall(self, gpuShape, mode=GL_TRIANGLES):
         assert isinstance(gpuShape, GPUShape)
@@ -717,14 +708,11 @@ class SimpleTexturePhongShaderProgram:
         VAO = glGenVertexArrays(1)
         glBindVertexArray(VAO)
 
-
         self.shaderProgram = OpenGL.GL.shaders.compileProgram(
             OpenGL.GL.shaders.compileShader(vertex_shader, OpenGL.GL.GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, OpenGL.GL.GL_FRAGMENT_SHADER))
 
-
     def setupVAO(self, gpuShape):
-
         glBindVertexArray(gpuShape.vao)
 
         glBindBuffer(GL_ARRAY_BUFFER, gpuShape.vbo)
@@ -734,7 +722,7 @@ class SimpleTexturePhongShaderProgram:
         position = glGetAttribLocation(self.shaderProgram, "position")
         glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(0))
         glEnableVertexAttribArray(position)
-        
+
         color = glGetAttribLocation(self.shaderProgram, "texCoords")
         glVertexAttribPointer(color, 2, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(12))
         glEnableVertexAttribArray(color)
@@ -745,7 +733,6 @@ class SimpleTexturePhongShaderProgram:
 
         # Unbinding current vao
         glBindVertexArray(0)
-
 
     def drawCall(self, gpuShape, mode=GL_TRIANGLES):
         assert isinstance(gpuShape, GPUShape)
@@ -759,29 +746,27 @@ class SimpleTexturePhongShaderProgram:
         # Unbind the current VAO
         glBindVertexArray(0)
 
-#TAREA4: Se crea este nuevo shader para usar múltiples luces con texturas
+
+# TAREA4: Se crea este nuevo shader para usar múltiples luces con texturas
 class MultipleLightTexturePhongShaderProgram:
 
     def __init__(self):
-        #TAREA4: Ahora los shaders están en archivos de texto independientes, se leen aquí
+        # TAREA4: Ahora los shaders están en archivos de texto independientes, se leen aquí
         with open(getAssetPath('multiple_lights_textures.vs'), 'r') as f:
             vertex_shader = f.readlines()
-        
+
         with open(getAssetPath('multiple_lights_textures.fs'), 'r') as f:
             fragment_shader = f.readlines()
-        
+
         # Binding artificial vertex array object for validation
         VAO = glGenVertexArrays(1)
         glBindVertexArray(VAO)
-
 
         self.shaderProgram = OpenGL.GL.shaders.compileProgram(
             OpenGL.GL.shaders.compileShader(vertex_shader, OpenGL.GL.GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, OpenGL.GL.GL_FRAGMENT_SHADER))
 
-
     def setupVAO(self, gpuShape):
-
         glBindVertexArray(gpuShape.vao)
 
         glBindBuffer(GL_ARRAY_BUFFER, gpuShape.vbo)
@@ -791,7 +776,7 @@ class MultipleLightTexturePhongShaderProgram:
         position = glGetAttribLocation(self.shaderProgram, "position")
         glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(0))
         glEnableVertexAttribArray(position)
-        
+
         color = glGetAttribLocation(self.shaderProgram, "texCoords")
         glVertexAttribPointer(color, 2, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(12))
         glEnableVertexAttribArray(color)
@@ -802,7 +787,6 @@ class MultipleLightTexturePhongShaderProgram:
 
         # Unbinding current vao
         glBindVertexArray(0)
-
 
     def drawCall(self, gpuShape, mode=GL_TRIANGLES):
         assert isinstance(gpuShape, GPUShape)
@@ -816,29 +800,27 @@ class MultipleLightTexturePhongShaderProgram:
         # Unbind the current VAO
         glBindVertexArray(0)
 
-#TAREA4: Se crea este shader para soportar geometría con color y múltiples luces
+
+# TAREA4: Se crea este shader para soportar geometría con color y múltiples luces
 class MultipleLightPhongShaderProgram:
 
     def __init__(self):
-        #TAREA4: Ahora los shaders están en archivos de texto independientes, aquí los leemos
+        # TAREA4: Ahora los shaders están en archivos de texto independientes, aquí los leemos
         with open(getAssetPath('multiple_lights_color.vs'), 'r') as f:
             vertex_shader = f.readlines()
-        
+
         with open(getAssetPath('multiple_lights_color.fs'), 'r') as f:
             fragment_shader = f.readlines()
-        
+
         # Binding artificial vertex array object for validation
         VAO = glGenVertexArrays(1)
         glBindVertexArray(VAO)
-
 
         self.shaderProgram = OpenGL.GL.shaders.compileProgram(
             OpenGL.GL.shaders.compileShader(vertex_shader, OpenGL.GL.GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, OpenGL.GL.GL_FRAGMENT_SHADER))
 
-
     def setupVAO(self, gpuShape):
-
         glBindVertexArray(gpuShape.vao)
 
         glBindBuffer(GL_ARRAY_BUFFER, gpuShape.vbo)
@@ -848,7 +830,7 @@ class MultipleLightPhongShaderProgram:
         position = glGetAttribLocation(self.shaderProgram, "position")
         glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 36, ctypes.c_void_p(0))
         glEnableVertexAttribArray(position)
-        
+
         color = glGetAttribLocation(self.shaderProgram, "color")
         glVertexAttribPointer(color, 3, GL_FLOAT, GL_FALSE, 36, ctypes.c_void_p(12))
         glEnableVertexAttribArray(color)
@@ -859,7 +841,6 @@ class MultipleLightPhongShaderProgram:
 
         # Unbinding current vao
         glBindVertexArray(0)
-
 
     def drawCall(self, gpuShape, mode=GL_TRIANGLES):
         assert isinstance(gpuShape, GPUShape)
