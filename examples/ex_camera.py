@@ -212,15 +212,6 @@ if __name__ == "__main__":
     shape = readOFF(getAssetPath('Maze.off'), (0.9, 0.6, 0.2))
     gpuShape = createGPUShape(pipeline, shape)
 
-    # shapeHelix = readOFF(getAssetPath('helice.off'), (0.6, 0.9, 0.5))
-    # gpuHelix = createGPUShape(pipeline, shapeHelix)
-
-    # shapePlane2 = readOFF(getAssetPath('avion.off'), (0.9, 0.6, 0.2))
-    # gpuPlane2 = createGPUShape(pipeline, shapePlane2)
-
-    # shapeHelix2 = readOFF(getAssetPath('helice.off'), (0.6, 0.9, 0.5))
-    # gpuHelix2 = createGPUShape(pipeline, shapeHelix2)
-
     # Setting uniforms that will NOT change on each iteration
     glUseProgram(pipeline.shaderProgram)
     glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "La"), 1.0, 1.0, 1.0)
